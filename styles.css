@@ -1,37 +1,97 @@
 /* Add a black background color to the top navigation */
 
+body {
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.045)08e;
+}
+
 .title {
     text-align: center;
 }
 
 .navbar {
     background-color: #dcdcdc;
-    overflow: hidden;
-    margin: auto;
-    width: 35%;
+    text-align: center;
+    white-space: nowrap;
+    height: 5%;
   }
   
   /* Style the links inside the navigation bar */
-  .navbar a {
+  /* .navbar ul li a {
     float: left;
     color: #000000;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
     font-size: 17px;
+  } */
+
+  .navbar ul li a {
+    white-space: wrap;
+    display: inline-block;
+    padding:2.3em;
+    margin:-2.6em;
+    color: #ffffffc1;
+    text-decoration: none; 
   }
+
+  .navbar ul {
+      padding: 0;
+      margin: 0;
+  }
+
+  .navbar ul li {
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 15%;
+    border-right: 2px solid #ffffff3f;
+    padding:15px;
+}
+
+.navbar ul li a {
+    white-space: wrap;
+    display: inline-block;
+    padding:2.3em;
+    margin:-2.6em;
+    color: #000000c1;
+    text-decoration: none; 
+}
+
+.navbar ul li:hover {
+  background-color: #001114;
+  color: #ffffff;
+  box-shadow: -5px 0px #001114;
+}
+
+.navbar ul li a:hover {
+  color: #ffffff;
+}
+
+.navbar ul li:last-child {
+  border-right: none; 
+}
+
+.navbar ul li.active {
+  background-color: #205297;
+  color: #ffffff;
+  box-shadow: -5px 0px #205297;
+}
+
+.navbar ul li.active a{
+  color: #ffffff;
+}
+
+/*background-color: #205297;
   
   /* Change the color of links on hover */
-  .navbar a:hover {
+  /* .navbar a:hover {
     background-color: #a4a4a4;
     color: black;
-  }
+  } */
   
   /* Add a color to the active/current link */
-  .navbar a.active {
-    background-color: #205297;
-    color: white;
-  }
 
 .deliverablelink{
     font-size: 20px;
