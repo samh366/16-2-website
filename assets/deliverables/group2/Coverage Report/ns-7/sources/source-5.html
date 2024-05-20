@@ -1,0 +1,429 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > DialogueManager</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.state</a>
+</div>
+
+<h1>Coverage Summary for Class: DialogueManager (com.heslingtonhustle.state)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DialogueManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    76.5%
+  </span>
+  <span class="absValue">
+    (13/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.7%
+  </span>
+  <span class="absValue">
+    (56/75)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DialogueManager$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">DialogueManager$DialogueBox</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (4/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    70.6%
+  </span>
+  <span class="absValue">
+    (12/17)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    78.3%
+  </span>
+  <span class="absValue">
+    (18/23)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.2%
+  </span>
+  <span class="absValue">
+    (69/93)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.state;
+&nbsp;
+&nbsp;import com.heslingtonhustle.sound.SoundController;
+&nbsp;import com.heslingtonhustle.sound.Sounds;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;/**
+&nbsp; * A class to store different screens of dialogue to display to the player
+&nbsp; * The next dialogue can be viewed with an interact button
+&nbsp; * Dialogue boxes can contain only text or also contain a selection
+&nbsp; */
+&nbsp;public class DialogueManager {
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A class to store the data provided to the player in a dialogue box
+&nbsp;     * DialogueBox is a private inner class that can only be interacted with through DialogueManager
+&nbsp;     * Public methods within DialogueBox are only accessible to DialogueManager
+&nbsp;     */
+<b class="fc">&nbsp;    private class DialogueBox {</b>
+&nbsp;        private final String message;
+&nbsp;        private final List&lt;String&gt; options;
+&nbsp;        private int selectedOption;
+&nbsp;        private final DialogueCallback callback;
+&nbsp;
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Call to set the data displayed in the dialoguebox
+&nbsp;         * @param message The text to display
+&nbsp;         * @param options The options to choose from, can be null
+&nbsp;         * @param callback The lambda function to run afterwards, passed the chosen option
+&nbsp;         */
+<b class="fc">&nbsp;        private DialogueBox(String message, List&lt;String&gt; options, DialogueCallback callback) {</b>
+<b class="fc">&nbsp;            this.message = message;</b>
+<b class="fc">&nbsp;            this.options = options;</b>
+<b class="fc">&nbsp;            this.callback = callback;</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Moves the selection pointer down
+&nbsp;         */
+&nbsp;        private void decreaseSelection() {
+<b class="fc">&nbsp;            if (options != null) {</b>
+<b class="fc">&nbsp;                selectedOption = (selectedOption+options.size()-1) % options.size();</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                selectedOption = -1;</b>
+&nbsp;            }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Moves the selection pointer up
+&nbsp;         */
+&nbsp;        private void increaseSelection() {
+<b class="fc">&nbsp;            if (options != null) {</b>
+<b class="fc">&nbsp;                selectedOption = (selectedOption + 1) % options.size();</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                    selectedOption = -1;</b>
+&nbsp;                }
+<b class="fc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        /**
+&nbsp;         * Runs the provided lambda function and passes in the selected option
+&nbsp;         */
+&nbsp;        private void submit() {
+<b class="nc">&nbsp;            if (callback != null) {</b>
+<b class="nc">&nbsp;                callback.onSelected(selectedOption);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    // ~~~ DialogueManager&#39;s properties and methods ~~~
+&nbsp;
+&nbsp;    private final Queue&lt;DialogueBox&gt; dialogueQueue;
+&nbsp;    // True if changes have been made that means the dialogue box should be re-drawn
+&nbsp;    private boolean update;
+&nbsp;
+&nbsp;    private final SoundController soundController;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initialises a queue to store dialogueboxes, and stores the soundcontroller to play
+&nbsp;     * dialogue sounds
+&nbsp;     * @param soundController The sound controller used by the game
+&nbsp;     */
+<b class="fc">&nbsp;    public DialogueManager(SoundController soundController) {</b>
+<b class="fc">&nbsp;        this.soundController = soundController;</b>
+<b class="fc">&nbsp;        dialogueQueue = new LinkedList&lt;DialogueBox&gt;();</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reacts to a set of actions
+&nbsp;     * @param pressedActions A set of pressed actions this frame
+&nbsp;     */
+&nbsp;    public void handleAction(HashSet&lt;Action&gt; pressedActions) {
+<b class="fc">&nbsp;        for (Action action : pressedActions)</b>
+<b class="fc">&nbsp;            switch (action) {</b>
+&nbsp;                case MOVE_UP:
+<b class="fc">&nbsp;                    decreaseSelection();</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case MOVE_DOWN:
+<b class="fc">&nbsp;                    increaseSelection();</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case INTERACT:
+<b class="nc">&nbsp;                    submit();</b>
+&nbsp;            }
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks if the dialogue queue is empty
+&nbsp;     * @return True if the queue is empty
+&nbsp;     */
+&nbsp;    public boolean isEmpty() {
+<b class="fc">&nbsp;        return dialogueQueue.isEmpty();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a dialogue box to the back of the queue
+&nbsp;     * @param message The message to display
+&nbsp;     * @param options The options the player can choose from
+&nbsp;     * @param callback The lambda to function to run when the player confirms
+&nbsp;     */
+&nbsp;    public void addDialogue(String message, List&lt;String&gt; options, DialogueCallback callback) {
+<b class="fc">&nbsp;        DialogueBox dialogueBox = new DialogueBox(message, options, callback);</b>
+<b class="fc">&nbsp;        dialogueQueue.add(dialogueBox);</b>
+<b class="fc">&nbsp;        update = true;</b>
+<b class="fc">&nbsp;        soundController.playSound(Sounds.DIALOGUEOPEN);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a dialogue box to the back of the queue
+&nbsp;     * @param message The message to display
+&nbsp;     * @param options The options the player can choose from
+&nbsp;     */
+&nbsp;    public void addDialogue(String message, List&lt;String&gt; options) {
+<b class="fc">&nbsp;        DialogueBox dialogueBox = new DialogueBox(message, options, null);</b>
+<b class="fc">&nbsp;        dialogueQueue.add(dialogueBox);</b>
+<b class="fc">&nbsp;        update = true;</b>
+<b class="fc">&nbsp;        soundController.playSound(Sounds.DIALOGUEOPEN);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a dialogue box to the back of the queue
+&nbsp;     * @param message The message to display
+&nbsp;     */
+&nbsp;    public void addDialogue(String message) {
+<b class="fc">&nbsp;        DialogueBox dialogueBox = new DialogueBox(message, null, null);</b>
+<b class="fc">&nbsp;        dialogueQueue.add(dialogueBox);</b>
+<b class="fc">&nbsp;        update = true;</b>
+<b class="fc">&nbsp;        soundController.playSound(Sounds.DIALOGUEOPEN);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds a dialogue box to the back of the queue
+&nbsp;     * @param message The message to display
+&nbsp;     * @param callback The lambda to function to run when the player confirms
+&nbsp;     */
+&nbsp;    public void addDialogue(String message, DialogueCallback callback) {
+<b class="nc">&nbsp;        DialogueBox dialogueBox = new DialogueBox(message, null, callback);</b>
+<b class="nc">&nbsp;        dialogueQueue.add(dialogueBox);</b>
+<b class="nc">&nbsp;        update = true;</b>
+<b class="nc">&nbsp;        soundController.playSound(Sounds.DIALOGUEOPEN);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the message on the currently displayed dialoguebox
+&nbsp;     * @return The message on the dialoguebox
+&nbsp;     */
+&nbsp;    public String getMessage() {
+<b class="fc">&nbsp;        if (dialogueQueue.isEmpty()){</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        DialogueBox dialogueBox = dialogueQueue.peek();</b>
+<b class="fc">&nbsp;        return dialogueBox.message;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return A list of options on the current dialogue box
+&nbsp;     */
+&nbsp;    public List&lt;String&gt; getOptions() {
+<b class="fc">&nbsp;        if (dialogueQueue.isEmpty()){</b>
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        DialogueBox dialogueBox = dialogueQueue.peek();</b>
+<b class="fc">&nbsp;        return dialogueBox.options;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The option that the player has currently selected
+&nbsp;     */
+&nbsp;    public int getSelectedOption() {
+<b class="fc">&nbsp;        if (dialogueQueue.isEmpty()){</b>
+<b class="fc">&nbsp;            return -1;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        DialogueBox dialogueBox = dialogueQueue.peek();</b>
+<b class="fc">&nbsp;        return dialogueBox.selectedOption;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Moves the player&#39;s selection down, and plays a sound
+&nbsp;     * Also signifies to hudRenderer that the dialogue box should be redrawn
+&nbsp;     */
+&nbsp;    public void decreaseSelection() {
+<b class="fc">&nbsp;        DialogueBox dialogueBox = getDialogueBox();</b>
+<b class="fc">&nbsp;        int option = getSelectedOption();</b>
+<b class="fc">&nbsp;        dialogueBox.decreaseSelection();</b>
+&nbsp;
+&nbsp;        // Works if no option are available
+<b class="fc">&nbsp;        if (dialogueBox.options != null &amp;&amp; option != getSelectedOption()) {</b>
+<b class="fc">&nbsp;            update = true;</b>
+<b class="fc">&nbsp;            soundController.playSound(Sounds.OPTIONSWITCH);</b>
+&nbsp;        }
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Moves the player&#39;s selection up, and plays a sound
+&nbsp;     * Also signifies to hudRenderer that the dialogue box should be redrawn
+&nbsp;     */
+&nbsp;    public void increaseSelection() {
+<b class="fc">&nbsp;        DialogueBox dialogueBox = getDialogueBox();</b>
+<b class="fc">&nbsp;        int option = getSelectedOption();</b>
+<b class="fc">&nbsp;        dialogueBox.increaseSelection();</b>
+&nbsp;
+<b class="fc">&nbsp;        if (dialogueBox.options != null &amp;&amp; option != getSelectedOption()) {</b>
+<b class="fc">&nbsp;            update = true;</b>
+<b class="fc">&nbsp;            soundController.playSound(Sounds.OPTIONSWITCH);</b>
+&nbsp;        }
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Calls the lambda function associated with the dialogue box at the front of the queue if given one.
+&nbsp;     * Also plays a confirmation/closing sound and advances the queue along.
+&nbsp;     */
+&nbsp;    public void submit() {
+<b class="nc">&nbsp;        if (dialogueQueue.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;There are no dialog boxes to submit&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        DialogueBox dialogueBox = dialogueQueue.remove();</b>
+<b class="nc">&nbsp;        dialogueBox.submit();</b>
+<b class="nc">&nbsp;        update = true;</b>
+&nbsp;        // If no options are available, we just close
+<b class="nc">&nbsp;        if (dialogueBox.options == null) {</b>
+<b class="nc">&nbsp;            soundController.playSound(Sounds.DIALOGUECLOSE);</b>
+&nbsp;        } else {
+&nbsp;            // If there were options, play a confirm noise
+<b class="nc">&nbsp;            soundController.playSound(Sounds.CONFIRM);</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The dialogue box at the front of the queue
+&nbsp;     */
+&nbsp;    private DialogueBox getDialogueBox() {
+<b class="fc">&nbsp;        if (dialogueQueue.isEmpty()) {</b>
+<b class="nc">&nbsp;            throw new RuntimeException(&quot;There are no dialog boxes to get&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return dialogueQueue.peek();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Call if the dialogue box has been constructed, so doesn&#39;t need to be reconstructed on the next frame
+&nbsp;     */
+&nbsp;    public void setUpdated() {
+<b class="nc">&nbsp;        update = false;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return True if the dialogue box should be reconstructed for the next frame
+&nbsp;     */
+&nbsp;    public boolean getUpdate() {
+<b class="fc">&nbsp;        return update;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return True if the dialogue queue is empty
+&nbsp;     */
+&nbsp;    public boolean queueEmpty() {
+<b class="nc">&nbsp;        return dialogueQueue.isEmpty();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

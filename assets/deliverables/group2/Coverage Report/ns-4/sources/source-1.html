@@ -1,0 +1,286 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > CharacterRenderer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.renderer</a>
+</div>
+
+<h1>Coverage Summary for Class: CharacterRenderer (com.heslingtonhustle.renderer)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CharacterRenderer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/54)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CharacterRenderer$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/55)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.renderer;
+&nbsp;
+&nbsp;import com.badlogic.gdx.graphics.g2d.Sprite;
+&nbsp;import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+&nbsp;import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+&nbsp;import com.badlogic.gdx.graphics.g2d.TextureRegion;
+&nbsp;import com.badlogic.gdx.math.Vector2;
+&nbsp;import com.badlogic.gdx.utils.Array;
+&nbsp;import com.heslingtonhustle.state.Facing;
+&nbsp;
+&nbsp;/**
+&nbsp; * A class used to store and render the animations for the player
+&nbsp; * and other NPC characters
+&nbsp; */
+&nbsp;public class CharacterRenderer {
+&nbsp;    private final TextureManager characterTextures;
+&nbsp;    private final Sprite characterSprite;
+&nbsp;    private final TextureAtlas textureAtlas;
+&nbsp;    private final String textureRegionPrefix;
+&nbsp;    private final Vector2 size;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Instantiates a new renderer for a specific character
+&nbsp;     * Because the idea is that this can be used for multiple characters, we use textureRegionPrefix
+&nbsp;     * For example, in the texture atlas, if you have regions such as &#39;main-player-idle-down&#39;, &#39;main-player-idle-right&#39;,
+&nbsp;     * the prefix is &#39;main-player&#39;
+&nbsp;     * @param width Width of the character in real world pixels
+&nbsp;     * @param height Height of the character
+&nbsp;     * @param textureAtlas The atlas containing the character textures
+&nbsp;     * @param textureRegionPrefix The prefix to identify the character &#39;player-x&#39;
+&nbsp;     */
+<b class="nc">&nbsp;    public CharacterRenderer(float width, float height, TextureAtlas textureAtlas, String textureRegionPrefix, boolean npc) {</b>
+&nbsp;
+<b class="nc">&nbsp;        this.textureAtlas = textureAtlas;</b>
+<b class="nc">&nbsp;        this.textureRegionPrefix = textureRegionPrefix;</b>
+&nbsp;
+<b class="nc">&nbsp;        size = new Vector2(width, height);</b>
+&nbsp;
+<b class="nc">&nbsp;        characterTextures = new TextureManager();</b>
+&nbsp;
+<b class="nc">&nbsp;        addStaticTextures();</b>
+<b class="nc">&nbsp;        if (!npc) addMovingTextures();</b>
+&nbsp;
+<b class="nc">&nbsp;        characterSprite = new Sprite(characterTextures.retrieveTexture(&quot;idle-down&quot;));</b>
+<b class="nc">&nbsp;        characterSprite.setSize(width, height);</b>
+<b class="nc">&nbsp;        characterSprite.setOriginCenter();</b>
+<b class="nc">&nbsp;        characterSprite.setScale(1.2f);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Renders a character at a certain position
+&nbsp;     * @param batch The spritebatch to render to
+&nbsp;     * @param x x position of the character
+&nbsp;     * @param y y position of the character
+&nbsp;     * @param direction The direction the character should be facing
+&nbsp;     * @param moving Whether teh character is moving or not, if so will play
+&nbsp;     *               a walking animation
+&nbsp;     */
+&nbsp;    public void render(SpriteBatch batch, float x, float y, Facing direction, Boolean moving) {
+<b class="nc">&nbsp;        String textureKey = getTextureKey(direction, moving);</b>
+<b class="nc">&nbsp;        characterSprite.setRegion(characterTextures.retrieveTexture(textureKey));</b>
+<b class="nc">&nbsp;        characterSprite.setPosition(x, y);</b>
+<b class="nc">&nbsp;        characterSprite.draw(batch);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Specifically only loads the static characters for a texture.
+&nbsp;     * Useful since NPCs don&#39;t have any moving textures
+&nbsp;     */
+&nbsp;    private void addStaticTextures() {
+&nbsp;        // First by adding the static textures (when the character is idle)
+<b class="nc">&nbsp;        TextureRegion idleLeft = textureAtlas.findRegion(textureRegionPrefix+&quot;-idle-left&quot;);</b>
+<b class="nc">&nbsp;        characterTextures.addTexture(&quot;idle-left&quot;, idleLeft);</b>
+<b class="nc">&nbsp;        TextureRegion idleRight = textureAtlas.findRegion(textureRegionPrefix+&quot;-idle-right&quot;);</b>
+<b class="nc">&nbsp;        characterTextures.addTexture(&quot;idle-right&quot;, idleRight);</b>
+<b class="nc">&nbsp;        TextureRegion idleUp = textureAtlas.findRegion(textureRegionPrefix+&quot;-idle-up&quot;);</b>
+<b class="nc">&nbsp;        characterTextures.addTexture(&quot;idle-up&quot;, idleUp);</b>
+<b class="nc">&nbsp;        TextureRegion idleDown = textureAtlas.findRegion(textureRegionPrefix+&quot;-idle-down&quot;);</b>
+<b class="nc">&nbsp;        characterTextures.addTexture(&quot;idle-down&quot;, idleDown);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Specifically loads the frames for walking animations
+&nbsp;     * Only used for players
+&nbsp;     */
+&nbsp;    public void addMovingTextures() {
+<b class="nc">&nbsp;        float speed = 0.15f;</b>
+&nbsp;
+<b class="nc">&nbsp;        Array&lt;TextureAtlas.AtlasRegion&gt; walkingLeft = textureAtlas.findRegions(textureRegionPrefix+&quot;-walking-left&quot;);</b>
+<b class="nc">&nbsp;        characterTextures.addAnimation(&quot;walking-left&quot;, walkingLeft, speed);</b>
+<b class="nc">&nbsp;        Array&lt;TextureAtlas.AtlasRegion&gt; walkingRight = textureAtlas.findRegions(textureRegionPrefix+&quot;-walking-right&quot;);</b>
+<b class="nc">&nbsp;        characterTextures.addAnimation(&quot;walking-right&quot;, walkingRight, speed);</b>
+<b class="nc">&nbsp;        Array&lt;TextureAtlas.AtlasRegion&gt; walkingUp = textureAtlas.findRegions(textureRegionPrefix+&quot;-walking-up&quot;);</b>
+<b class="nc">&nbsp;        characterTextures.addAnimation(&quot;walking-up&quot;, walkingUp, speed);</b>
+<b class="nc">&nbsp;        Array&lt;TextureAtlas.AtlasRegion&gt; walkingDown = textureAtlas.findRegions(textureRegionPrefix+&quot;-walking-down&quot;);</b>
+<b class="nc">&nbsp;        characterTextures.addAnimation(&quot;walking-down&quot;, walkingDown, speed);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the correct texture key used to identify an animation based
+&nbsp;     * on whether the character is moving and in what direction
+&nbsp;     * @param direction A direction from the Facing enum
+&nbsp;     * @param moving True if the player is moving
+&nbsp;     * @return The texture key used to identify an animation
+&nbsp;     */
+&nbsp;    private String getTextureKey(Facing direction, Boolean moving) {
+<b class="nc">&nbsp;        String textureKey = &quot;idle-down&quot;;</b>
+<b class="nc">&nbsp;        if (moving) {</b>
+<b class="nc">&nbsp;            switch (direction) {</b>
+&nbsp;                case LEFT:
+<b class="nc">&nbsp;                    textureKey = &quot;walking-left&quot;;</b>
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;                case RIGHT:
+<b class="nc">&nbsp;                    textureKey = &quot;walking-right&quot;;</b>
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;                case UP:
+<b class="nc">&nbsp;                    textureKey = &quot;walking-up&quot;;</b>
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;                case DOWN:
+<b class="nc">&nbsp;                    textureKey = &quot;walking-down&quot;;</b>
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;            }
+&nbsp;        } else {
+<b class="nc">&nbsp;                switch (direction) {</b>
+&nbsp;                    case LEFT:
+<b class="nc">&nbsp;                        textureKey = &quot;idle-left&quot;;</b>
+<b class="nc">&nbsp;                        break;</b>
+&nbsp;                    case RIGHT:
+<b class="nc">&nbsp;                        textureKey = &quot;idle-right&quot;;</b>
+<b class="nc">&nbsp;                        break;</b>
+&nbsp;                    case UP:
+<b class="nc">&nbsp;                        textureKey = &quot;idle-up&quot;;</b>
+<b class="nc">&nbsp;                        break;</b>
+&nbsp;                    case DOWN:
+<b class="nc">&nbsp;                        break;</b>
+&nbsp;                    default:
+&nbsp;                        break;
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        return textureKey;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the world width and height of the rendered sprite
+&nbsp;     * @return A vector of the width and height
+&nbsp;     */
+&nbsp;    public Vector2 getSize() {
+<b class="nc">&nbsp;        return size;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The character&#39;s sprite
+&nbsp;     */
+<b class="nc">&nbsp;    public Sprite getCharacterSprite() { return characterSprite; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

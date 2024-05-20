@@ -1,0 +1,268 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > SoundController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.sound</a>
+</div>
+
+<h1>Coverage Summary for Class: SoundController (com.heslingtonhustle.sound)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">SoundController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (3/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    44.8%
+  </span>
+  <span class="absValue">
+    (26/58)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.sound;
+&nbsp;import com.badlogic.gdx.Gdx;
+&nbsp;import com.badlogic.gdx.audio.Music;
+&nbsp;import com.badlogic.gdx.audio.Sound;
+&nbsp;import com.badlogic.gdx.utils.Disposable;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;
+&nbsp;/**
+&nbsp; * A class to manage the playing, switching, loading and disposing of sounds and music in the game
+&nbsp; */
+&nbsp;public class SoundController implements Disposable {
+&nbsp;    private Music gameMusic, menuMusic, currentMusic;
+&nbsp;    private Sound open, close, optionSwitch, confirm, footstep1, foostep2;
+<b class="fc">&nbsp;    private final HashMap&lt;Sounds, Music&gt; musicTypes = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;    private final HashMap&lt;Sounds, Sound&gt; sfxTypes = new HashMap&lt;&gt;();</b>
+<b class="fc">&nbsp;    private float musicVolume = 0.5f, sfxVolume = 0.8f;</b>
+&nbsp;    public static final String MenuMusicAsset = &quot;Sound/Music/menuMusic.mp3&quot;;
+&nbsp;    public static final String GameMusicAsset = &quot;Sound/Music/gameMusic.mp3&quot;;
+&nbsp;    public static final String OpenSfxAsset = &quot;Sound/SFX/open.ogg&quot;;
+&nbsp;    public static final String CloseSfxAsset = &quot;Sound/SFX/close.ogg&quot;;
+&nbsp;    public static final String OptionSwitchSfxAsset = &quot;Sound/SFX/switch.ogg&quot;;
+&nbsp;    public static final String ConfirmSfxAsset = &quot;Sound/SFX/confirm3.ogg&quot;;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Call to load sounds and initialise a class to switch sounds
+&nbsp;     */
+<b class="fc">&nbsp;    public SoundController() {</b>
+<b class="fc">&nbsp;        load();</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Loads game music and sound effects
+&nbsp;     */
+&nbsp;    private void load() {
+&nbsp;        // Menu Music
+<b class="fc">&nbsp;        menuMusic = Gdx.audio.newMusic(Gdx.files.internal(MenuMusicAsset));</b>
+<b class="fc">&nbsp;        menuMusic.setLooping(true);</b>
+<b class="fc">&nbsp;        menuMusic.setVolume(musicVolume);</b>
+&nbsp;
+&nbsp;        // Game music
+<b class="fc">&nbsp;        gameMusic = Gdx.audio.newMusic(Gdx.files.internal(GameMusicAsset));</b>
+<b class="fc">&nbsp;        gameMusic.setLooping(true);</b>
+<b class="fc">&nbsp;        gameMusic.setVolume(musicVolume);</b>
+&nbsp;
+&nbsp;        // SFX
+<b class="fc">&nbsp;        open = Gdx.audio.newSound(Gdx.files.internal(OpenSfxAsset));</b>
+<b class="fc">&nbsp;        close = Gdx.audio.newSound(Gdx.files.internal(CloseSfxAsset));</b>
+<b class="fc">&nbsp;        optionSwitch = Gdx.audio.newSound(Gdx.files.internal(OptionSwitchSfxAsset));</b>
+<b class="fc">&nbsp;        confirm = Gdx.audio.newSound(Gdx.files.internal(ConfirmSfxAsset));</b>
+&nbsp;
+&nbsp;
+&nbsp;        // Map values in Sounds to sound effects to play
+<b class="fc">&nbsp;        musicTypes.put(Sounds.MENU, menuMusic);</b>
+<b class="fc">&nbsp;        musicTypes.put(Sounds.GAME, gameMusic);</b>
+&nbsp;
+<b class="fc">&nbsp;        sfxTypes.put(Sounds.DIALOGUEOPEN, open);</b>
+<b class="fc">&nbsp;        sfxTypes.put(Sounds.DIALOGUECLOSE, close);</b>
+<b class="fc">&nbsp;        sfxTypes.put(Sounds.OPTIONSWITCH, optionSwitch);</b>
+<b class="fc">&nbsp;        sfxTypes.put(Sounds.CONFIRM, confirm);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Plays a sound effect, prints a warning if the sound is unregistered
+&nbsp;     * @param sound The sound to play from the Sounds enum
+&nbsp;     */
+&nbsp;    public void playSound(Sounds sound) {
+<b class="fc">&nbsp;        if (sfxTypes.containsKey(sound)) {</b>
+<b class="fc">&nbsp;            sfxTypes.get(sound).play(sfxVolume);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            System.out.println(&quot;WARNING: Tried to play unregistered sound&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Resumes playback of the current music track
+&nbsp;     */
+&nbsp;    public void playMusic() {
+<b class="nc">&nbsp;        currentMusic.play();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Pauses the current music track
+&nbsp;     */
+&nbsp;    public void pauseMusic() {
+<b class="nc">&nbsp;        currentMusic.pause();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Switches the current music track to the one provided
+&nbsp;     * @param sound An enum value from Sounds
+&nbsp;     */
+&nbsp;    public void setMusic(Sounds sound) {
+<b class="nc">&nbsp;        if (musicTypes.containsKey(sound)) {</b>
+<b class="nc">&nbsp;            if (currentMusic == null) {</b>
+&nbsp;                // No music set yet
+<b class="nc">&nbsp;                currentMusic = musicTypes.get(sound);</b>
+<b class="nc">&nbsp;                currentMusic.play();</b>
+<b class="nc">&nbsp;            } else if (currentMusic != musicTypes.get(sound)) {</b>
+&nbsp;                // Switch music playing
+<b class="nc">&nbsp;                currentMusic.stop();</b>
+<b class="nc">&nbsp;                currentMusic = musicTypes.get(sound);</b>
+<b class="nc">&nbsp;                currentMusic.play();</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } else if (currentMusic != null) {</b>
+<b class="nc">&nbsp;            currentMusic.stop();</b>
+<b class="nc">&nbsp;            currentMusic = null;</b>
+&nbsp;        }
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the volume of in game music
+&nbsp;     * @param volume The float value to set
+&nbsp;     */
+&nbsp;    public void setMusicVolume(float volume) {
+<b class="nc">&nbsp;        musicVolume = volume;</b>
+<b class="nc">&nbsp;        currentMusic.setVolume(musicVolume);</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the volume of game sound effects
+&nbsp;     * @param volume The float value to set
+&nbsp;     */
+&nbsp;    public void setSfxVolume(float volume) {
+<b class="nc">&nbsp;        sfxVolume = volume;</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The current music volume
+&nbsp;     */
+&nbsp;    public float getMusicVolume() {
+<b class="nc">&nbsp;        return musicVolume;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The current sound effects volume
+&nbsp;     */
+&nbsp;    public float getSfxVolume() {
+<b class="nc">&nbsp;        return sfxVolume;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Disposes of all music and sound effects
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void dispose() {
+<b class="nc">&nbsp;        menuMusic.dispose();</b>
+<b class="nc">&nbsp;        gameMusic.dispose();</b>
+<b class="nc">&nbsp;        open.dispose();</b>
+<b class="nc">&nbsp;        close.dispose();</b>
+<b class="nc">&nbsp;        optionSwitch.dispose();</b>
+<b class="nc">&nbsp;        confirm.dispose();</b>
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The current music
+&nbsp;     */
+<b class="nc">&nbsp;    public Music getCurrentMusic() { return currentMusic; }</b>
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

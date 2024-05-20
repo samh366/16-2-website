@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ActivityTests</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.skloch.heshustle.tests</a>
+</div>
+
+<h1>Coverage Summary for Class: ActivityTests (io.skloch.heshustle.tests)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ActivityTests</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (31/31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.skloch.heshustle.tests;
+&nbsp;
+&nbsp;import com.heslingtonhustle.state.Activity;
+&nbsp;import org.junit.Test;
+&nbsp;
+&nbsp;import static org.junit.Assert.*;
+&nbsp;
+<b class="fc">&nbsp;public class ActivityTests {</b>
+&nbsp;    /**
+&nbsp;     * Tests whether an Activity correctly returns information about
+&nbsp;     * itself
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    public void getActivityAttributes() {
+<b class="fc">&nbsp;        Activity activity = new Activity(</b>
+&nbsp;                &quot;fishing&quot;,
+&nbsp;                &quot;recreational&quot;,
+&nbsp;                100,
+&nbsp;                15,
+&nbsp;                2,
+&nbsp;                3
+&nbsp;        );
+&nbsp;
+&nbsp;
+&nbsp;        // Test attributes
+<b class="fc">&nbsp;        assertEquals(&quot;fishing&quot;, activity.getName());</b>
+<b class="fc">&nbsp;        assertEquals(&quot;recreational&quot;, activity.getScoreType());</b>
+<b class="fc">&nbsp;        assertEquals(100, activity.getScore());</b>
+<b class="fc">&nbsp;        assertEquals(15, activity.getEnergyUse());</b>
+<b class="fc">&nbsp;        assertEquals(2, activity.getHours());</b>
+&nbsp;
+&nbsp;        // Test other baseline attributes
+<b class="fc">&nbsp;        assertEquals(0, activity.getTimesCompleted());</b>
+<b class="fc">&nbsp;        assertEquals(0, activity.getTimesCompletedToday());</b>
+<b class="fc">&nbsp;        assertEquals(0, activity.getHoursSpent());</b>
+&nbsp;
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A test to ensure an Activity&#39;s attributes update correctly when
+&nbsp;     * the activity is completed.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    public void testCompleteActivity() {
+<b class="fc">&nbsp;        Activity activity = new Activity(</b>
+&nbsp;                &quot;fishing&quot;,
+&nbsp;                &quot;recreational&quot;,
+&nbsp;                100,
+&nbsp;                15,
+&nbsp;                2,
+&nbsp;                3
+&nbsp;        );
+&nbsp;
+&nbsp;
+&nbsp;        // Should increase the number of times it has been completed,
+&nbsp;        // and the hours spent doing it
+<b class="fc">&nbsp;        activity.completeActivity();</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(1, activity.getTimesCompleted());</b>
+<b class="fc">&nbsp;        assertEquals(1, activity.getTimesCompletedToday());</b>
+<b class="fc">&nbsp;        assertEquals(2, activity.getHoursSpent());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testCanDoActivityWhenMaxPerDayMinusOne() {
+<b class="fc">&nbsp;        Activity activity = new Activity(</b>
+&nbsp;                &quot;fishing&quot;,
+&nbsp;                &quot;recreational&quot;,
+&nbsp;                100,
+&nbsp;                15,
+&nbsp;                2,
+&nbsp;                -1);
+&nbsp;
+<b class="fc">&nbsp;        assertTrue(activity.canDoActivity());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testCanDoActivityWhenLessThanMax() {
+<b class="fc">&nbsp;        Activity activity = new Activity(</b>
+&nbsp;                &quot;fishing&quot;,
+&nbsp;                &quot;recreational&quot;,
+&nbsp;                100,
+&nbsp;                15,
+&nbsp;                2,
+&nbsp;                3);
+&nbsp;
+<b class="fc">&nbsp;        assertTrue(activity.canDoActivity());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testCanDoActivityWhenCant() {
+<b class="fc">&nbsp;        Activity activity = new Activity(</b>
+&nbsp;                &quot;fishing&quot;,
+&nbsp;                &quot;recreational&quot;,
+&nbsp;                100,
+&nbsp;                15,
+&nbsp;                2,
+&nbsp;                1);
+<b class="fc">&nbsp;        activity.completeActivity();</b>
+&nbsp;
+<b class="fc">&nbsp;        assertFalse(activity.canDoActivity());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testDayAdvanced() {
+<b class="fc">&nbsp;        Activity activity = new Activity(</b>
+&nbsp;                &quot;fishing&quot;,
+&nbsp;                &quot;recreational&quot;,
+&nbsp;                100,
+&nbsp;                15,
+&nbsp;                2,
+&nbsp;                1);
+&nbsp;
+<b class="fc">&nbsp;        activity.dayAdvanced();</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(0, activity.getTimesCompletedToday());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

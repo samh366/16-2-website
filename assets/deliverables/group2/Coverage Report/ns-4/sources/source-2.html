@@ -1,0 +1,395 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > HudRenderer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.renderer</a>
+</div>
+
+<h1>Coverage Summary for Class: HudRenderer (com.heslingtonhustle.renderer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HudRenderer</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/97)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.renderer;
+&nbsp;
+&nbsp;import com.badlogic.gdx.Gdx;
+&nbsp;import com.badlogic.gdx.graphics.Color;
+&nbsp;import com.badlogic.gdx.graphics.OrthographicCamera;
+&nbsp;import com.badlogic.gdx.graphics.Texture;
+&nbsp;import com.badlogic.gdx.maps.MapProperties;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.Stage;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+&nbsp;import com.badlogic.gdx.utils.Disposable;
+&nbsp;import com.badlogic.gdx.utils.viewport.FitViewport;
+&nbsp;import com.heslingtonhustle.state.DialogueManager;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.Window;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.Label;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.Table;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.Image;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;/**
+&nbsp; * A class to render static information to the screen that the player needs
+&nbsp; * Displays the time and date, and the current energy level
+&nbsp; * Also displays a label when the player can interact with an event.
+&nbsp; */
+&nbsp;public class HudRenderer implements Disposable {
+&nbsp;    private final OrthographicCamera hudCamera;
+&nbsp;    private final FitViewport viewport;
+&nbsp;    private final DialogueManager dialogueManager;
+&nbsp;    private final Skin skin;
+&nbsp;    private final Stage hudStage;
+&nbsp;    private final Window dialogueWindow;
+&nbsp;    private final Label dialogueText;
+&nbsp;    private final Table optionTable;
+&nbsp;    private final TextButton dayButton;
+&nbsp;    private final TextButton timeButton;
+&nbsp;    private final Label interactLabel;
+&nbsp;    private final Image energyBar;
+&nbsp;    private final Image blackScreen;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Initialises images and labels to display to the screen.
+&nbsp;     * Also initialises the dialogue window to display dialogue from
+&nbsp;     * dialogueManager.
+&nbsp;     *
+&nbsp;     * @param dialogueManager The current dialogue manager
+&nbsp;     * @param skin The loaded UI skin
+&nbsp;     * @param width Width of the game window
+&nbsp;     * @param height Height of the game window
+&nbsp;     */
+<b class="nc">&nbsp;    public HudRenderer(Skin skin, DialogueManager dialogueManager, int width, int height) {</b>
+<b class="nc">&nbsp;        this.skin = skin;</b>
+<b class="nc">&nbsp;        this.dialogueManager = dialogueManager;</b>
+&nbsp;
+&nbsp;        // Camera and viewport
+<b class="nc">&nbsp;        hudCamera = new OrthographicCamera();</b>
+<b class="nc">&nbsp;        viewport = new FitViewport(width, height, hudCamera);</b>
+&nbsp;
+&nbsp;        // Stage for UI elements
+<b class="nc">&nbsp;        hudStage = new Stage(new FitViewport(width, height));</b>
+&nbsp;
+&nbsp;        // Black screen
+<b class="nc">&nbsp;        blackScreen = new Image(new Texture(Gdx.files.internal(&quot;Graphics/black.png&quot;)));</b>
+<b class="nc">&nbsp;        blackScreen.setSize(viewport.getWorldWidth(), viewport.getWorldHeight());</b>
+<b class="nc">&nbsp;        blackScreen.addAction(Actions.alpha(0f));</b>
+<b class="nc">&nbsp;        hudStage.addActor(blackScreen);</b>
+&nbsp;
+&nbsp;        // Display time
+<b class="nc">&nbsp;        timeButton = new TextButton(&quot;10:00am&quot;, skin, &quot;informational&quot;);</b>
+<b class="nc">&nbsp;        timeButton.setWidth(200);</b>
+<b class="nc">&nbsp;        timeButton.setPosition(width - timeButton.getWidth() - 15, height - 133);</b>
+<b class="nc">&nbsp;        hudStage.addActor(timeButton);</b>
+&nbsp;
+&nbsp;        // Display day
+<b class="nc">&nbsp;        dayButton = new TextButton(&quot;Day 1&quot;, skin, &quot;informational&quot;);</b>
+<b class="nc">&nbsp;        dayButton.setWidth(200);</b>
+<b class="nc">&nbsp;        dayButton.setPosition(25, height - 133);</b>
+<b class="nc">&nbsp;        hudStage.addActor(dayButton);</b>
+&nbsp;
+&nbsp;        // Label to tell the user they can interact with something
+<b class="nc">&nbsp;        Table interactionTable = new Table();</b>
+<b class="nc">&nbsp;        hudStage.addActor(interactionTable);</b>
+<b class="nc">&nbsp;        interactionTable.setFillParent(true);</b>
+<b class="nc">&nbsp;        interactLabel = new Label(&quot;E - Interact&quot;, skin, &quot;interaction&quot;);</b>
+<b class="nc">&nbsp;        interactionTable.add(interactLabel).expand().padTop(250);</b>
+&nbsp;
+&nbsp;        // Energy bar
+<b class="nc">&nbsp;        energyBar = new Image(skin, &quot;energy_bar&quot;);</b>
+<b class="nc">&nbsp;        energyBar.setPosition(27, 27);</b>
+<b class="nc">&nbsp;        hudStage.addActor(energyBar);</b>
+&nbsp;
+&nbsp;        // Energy Bar Outline
+<b class="nc">&nbsp;        Image energyBarOutline = new Image(skin, &quot;energy_bar_outline&quot;);</b>
+<b class="nc">&nbsp;        energyBarOutline.setPosition(15, 15);</b>
+<b class="nc">&nbsp;        hudStage.addActor(energyBarOutline);</b>
+&nbsp;
+&nbsp;        // Dialogue box window
+<b class="nc">&nbsp;        dialogueWindow = new Window(&quot;&quot;, skin, &quot;dialog&quot;);</b>
+<b class="nc">&nbsp;        dialogueWindow.setSize(900, 200);</b>
+<b class="nc">&nbsp;        dialogueWindow.setPosition((width - dialogueWindow.getWidth())/2, 20);</b>
+<b class="nc">&nbsp;        hudStage.addActor(dialogueWindow);</b>
+<b class="nc">&nbsp;        dialogueWindow.setVisible(false);</b>
+&nbsp;
+&nbsp;        // Dialogue box table
+<b class="nc">&nbsp;        Table dialogueTable = new Table();</b>
+<b class="nc">&nbsp;        dialogueTable.setSize(860, 160);</b>
+<b class="nc">&nbsp;        dialogueTable.setPosition(20, 20);</b>
+<b class="nc">&nbsp;        dialogueWindow.addActor(dialogueTable);</b>
+&nbsp;
+&nbsp;        // Dialogue text
+<b class="nc">&nbsp;        dialogueText = new Label(&quot;&quot;, skin, &quot;dialoguesmall&quot;);</b>
+<b class="nc">&nbsp;        dialogueText.setWrap(true);</b>
+<b class="nc">&nbsp;        dialogueTable.add(dialogueText).expandX().expandY().left().top().prefWidth(860);</b>
+<b class="nc">&nbsp;        dialogueTable.row();</b>
+&nbsp;
+&nbsp;        // Dialogue options
+<b class="nc">&nbsp;        optionTable = new Table();</b>
+<b class="nc">&nbsp;        dialogueTable.add(optionTable).left().bottom();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates and renders the time and date to the screen
+&nbsp;     * Also displays the user&#39;s energy, and a prompt if they can interact with
+&nbsp;     * a building.
+&nbsp;     * Displays a dialogue window if dialogueQueue is not empty
+&nbsp;     */
+&nbsp;    public void render(MapProperties nearestTrigger){
+<b class="nc">&nbsp;        hudStage.setViewport(viewport);</b>
+<b class="nc">&nbsp;        hudCamera.update();</b>
+&nbsp;
+&nbsp;        // Show an interaction label if player is near an interactable object
+<b class="nc">&nbsp;        if (nearestTrigger == null) {</b>
+<b class="nc">&nbsp;            interactLabel.setVisible(false);</b>
+<b class="nc">&nbsp;        } else if (nearestTrigger.containsKey(&quot;sign&quot;)) {</b>
+<b class="nc">&nbsp;            interactLabel.setVisible(true);</b>
+<b class="nc">&nbsp;            interactLabel.setText(&quot;E - Read&quot;);</b>
+<b class="nc">&nbsp;        } else if (nearestTrigger.containsKey(&quot;sleep&quot;)) {</b>
+<b class="nc">&nbsp;            interactLabel.setVisible(true);</b>
+<b class="nc">&nbsp;            interactLabel.setText(&quot;E - Sleep&quot;);</b>
+<b class="nc">&nbsp;        } else if (nearestTrigger.containsKey(&quot;dialogue&quot;)) {</b>
+<b class="nc">&nbsp;            interactLabel.setVisible(true);</b>
+<b class="nc">&nbsp;            interactLabel.setText(&quot;E - Talk&quot;);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            interactLabel.setVisible(true);</b>
+<b class="nc">&nbsp;            interactLabel.setText(&quot;E - Interact&quot;);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        showDialogue();</b>
+&nbsp;
+<b class="nc">&nbsp;        hudStage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));</b>
+<b class="nc">&nbsp;        hudStage.draw();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Updates hud&#39;s time, date and energy labels
+&nbsp;     * @param time The time represented as a string
+&nbsp;     * @param day The day number to display
+&nbsp;     * @param energy The amount of energy the player has left, between 0 and 100
+&nbsp;     */
+&nbsp;    public void updateValues(String time, int day, int energy) {
+<b class="nc">&nbsp;        timeButton.setText(time);</b>
+<b class="nc">&nbsp;        dayButton.setText(&quot;Day &quot; + day);</b>
+&nbsp;
+<b class="nc">&nbsp;        energyBar.setScaleY(energy / 100f);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Fades the black screen in
+&nbsp;     */
+&nbsp;    public void fadeIn(float duration) {
+<b class="nc">&nbsp;        blackScreen.addAction(Actions.fadeIn(duration));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Fades the screen in from black
+&nbsp;     */
+&nbsp;    public void fadeOut(float duration) {
+<b class="nc">&nbsp;        blackScreen.addAction(Actions.fadeOut(duration));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return Returns true if the screen is black
+&nbsp;     */
+&nbsp;    public Boolean screenIsBlack() {
+<b class="nc">&nbsp;        Color colour = blackScreen.getColor();</b>
+<b class="nc">&nbsp;        return colour.a == 1f;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return True if a black screen is not being faded in or out
+&nbsp;     */
+&nbsp;    public Boolean screenClear() {
+<b class="nc">&nbsp;        Color colour = blackScreen.getColor();</b>
+<b class="nc">&nbsp;        return colour.a == 0f;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Shows/hides the dialogueBox if there is dialogue in the queue
+&nbsp;     * Also restructures the dialogueBox table contents if there is an update
+&nbsp;     */
+&nbsp;    private void showDialogue() {
+<b class="nc">&nbsp;        if (dialogueManager.isEmpty()) {</b>
+&nbsp;            // No dialogue box to show
+<b class="nc">&nbsp;            dialogueWindow.setVisible(false);</b>
+&nbsp;            return;
+&nbsp;        } else {
+<b class="nc">&nbsp;            dialogueWindow.setVisible(true);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (dialogueManager.getUpdate()) {</b>
+<b class="nc">&nbsp;            reconstructDialogueBox();</b>
+<b class="nc">&nbsp;            dialogueManager.setUpdated();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Builds a dialogue box using scene2d elements
+&nbsp;     * Displays the main dialogue text, a list of options and a pointer if
+&nbsp;     * necessary.
+&nbsp;     * Called when text is changed or an option pointer is moved.
+&nbsp;     */
+&nbsp;    public void reconstructDialogueBox() {
+&nbsp;        // Check dialogue details
+<b class="nc">&nbsp;        String message = dialogueManager.getMessage();</b>
+<b class="nc">&nbsp;        List&lt;String&gt; options = dialogueManager.getOptions();</b>
+<b class="nc">&nbsp;        int selectedOption = dialogueManager.getSelectedOption();</b>
+&nbsp;
+<b class="nc">&nbsp;        dialogueText.setText(message);</b>
+<b class="nc">&nbsp;        optionTable.clearChildren();</b>
+&nbsp;
+&nbsp;        // Only draw if the player has options to choose from
+<b class="nc">&nbsp;        if (options != null) {</b>
+&nbsp;            // Add player&#39;s options to the options table
+<b class="nc">&nbsp;            for (int i = 0; i &lt; options.size(); i++) {</b>
+<b class="nc">&nbsp;                Label pointer = new Label(&quot;&gt;&gt;&quot;, skin, &quot;dialoguesmall&quot;);</b>
+&nbsp;                // Hide pointer if not selected
+<b class="nc">&nbsp;                if (selectedOption != i) pointer.setVisible(false);</b>
+<b class="nc">&nbsp;                Label option = new Label(options.get(i), skin, &quot;dialoguesmall&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;                optionTable.add(pointer).left().padRight(10);</b>
+<b class="nc">&nbsp;                optionTable.add(option).left();</b>
+<b class="nc">&nbsp;                optionTable.row();</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Corrects resizes the screen elements
+&nbsp;     * @param width New width of the game window
+&nbsp;     * @param height New height of the game window
+&nbsp;     */
+&nbsp;    public void resize(int width, int height) {
+<b class="nc">&nbsp;        viewport.update(width, height, true);</b>
+<b class="nc">&nbsp;        hudStage.getViewport().update(width, height);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Correctly disposes of any elements
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void dispose() {
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The day button (for testing)
+&nbsp;     */
+<b class="nc">&nbsp;    public TextButton getDayButton() { return dayButton; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The viewport (for testing)
+&nbsp;     */
+<b class="nc">&nbsp;    public FitViewport getViewport() { return viewport; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The time button (for testing)
+&nbsp;     */
+<b class="nc">&nbsp;    public TextButton getTimeButton() { return timeButton; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The energy bar (for testing)
+&nbsp;     */
+<b class="nc">&nbsp;    public Image getEnergyBar() { return energyBar; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

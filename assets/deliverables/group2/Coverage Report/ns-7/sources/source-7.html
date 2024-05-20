@@ -1,0 +1,282 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > LeaderboardManager</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.state</a>
+</div>
+
+<h1>Coverage Summary for Class: LeaderboardManager (com.heslingtonhustle.state)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LeaderboardManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (2/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (7/49)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">LeaderboardManager$1</td>
+  </tr>
+  <tr>
+    <td class="name">LeaderboardManager$Score</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (2/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    13.2%
+  </span>
+  <span class="absValue">
+    (7/53)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.state;
+&nbsp;
+&nbsp;import com.badlogic.gdx.Gdx;
+&nbsp;import com.badlogic.gdx.files.FileHandle;
+&nbsp;import com.badlogic.gdx.utils.Array;
+&nbsp;
+&nbsp;import java.util.regex.Pattern;
+&nbsp;
+&nbsp;/**
+&nbsp; * A class to manage reading from and writing to the leaderboard
+&nbsp; * Can also handle inserting a new element into the leaderbaord
+&nbsp; */
+<b class="nc">&nbsp;public class LeaderboardManager {</b>
+&nbsp;    // Regex to check names against
+<b class="fc">&nbsp;    private static final Pattern namePattern = Pattern.compile(&quot;[^a-zA-Z0-9 ]&quot;);</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A small class to store information about a name and a score
+&nbsp;     */
+<b class="nc">&nbsp;    private static class Score {</b>
+&nbsp;        public String name;
+&nbsp;        public String score;
+<b class="nc">&nbsp;        private Score(String name, String score) {</b>
+<b class="nc">&nbsp;            this.name = name;</b>
+<b class="nc">&nbsp;            this.score = score;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Checks whether a name is valid to add to the leaderboard
+&nbsp;     * @param name The name to add
+&nbsp;     * @return True if the name is valid
+&nbsp;     */
+&nbsp;    public static boolean isValidName(String name) {
+<b class="fc">&nbsp;        if (name == null) {</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        name = name.trim();</b>
+&nbsp;        // Check for blank name
+<b class="fc">&nbsp;        if (name.replace(&quot; &quot;, &quot;&quot;).isEmpty()) {</b>
+<b class="fc">&nbsp;            return false;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // A name only contains letters and numbers
+<b class="fc">&nbsp;        return !namePattern.matcher(name).find();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Loads data from the leaderboard file
+&nbsp;     * @return A list of strings, with each string representing
+&nbsp;     * a line on the leaderboard
+&nbsp;     */
+&nbsp;    public static Array&lt;String&gt; getScores() {
+<b class="nc">&nbsp;        Array&lt;String&gt; lines = new Array&lt;&gt;();</b>
+&nbsp;
+&nbsp;        // Read leaderboard data
+<b class="nc">&nbsp;        Array&lt;Score&gt; scores = readValues();</b>
+&nbsp;
+<b class="nc">&nbsp;        for (Score score : scores) {</b>
+<b class="nc">&nbsp;            lines.add(score.name + &quot;: &quot; + score.score);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return lines;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Reads the two raw strings from each line in the leaderboard file
+&nbsp;     * Returns values as a linked hash map to preserve order and pairings
+&nbsp;     * Should be formatted further to Strings or String int pairs
+&nbsp;     * @return A LinkedHashMap containing names and string scores
+&nbsp;     */
+&nbsp;    private static Array&lt;Score&gt; readValues() {
+<b class="nc">&nbsp;        Array&lt;Score&gt; scores = new Array&lt;&gt;();</b>
+<b class="nc">&nbsp;        FileHandle file = Gdx.files.local(&quot;leaderboard.txt&quot;);</b>
+&nbsp;
+&nbsp;        // If there isn&#39;t a leaderboard file, just return the empty hashmap
+<b class="nc">&nbsp;        if (!file.exists()) {</b>
+<b class="nc">&nbsp;            return scores;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        String data = file.readString();</b>
+<b class="nc">&nbsp;        int count = 0;</b>
+&nbsp;        // Split into lines
+<b class="nc">&nbsp;        for (String line : data.split(&quot;\n&quot;)) {</b>
+&nbsp;            // Ignores blank lines and lines without a comma
+<b class="nc">&nbsp;            if (line.contains(&quot;,&quot;)) {</b>
+<b class="nc">&nbsp;                scores.add(</b>
+&nbsp;                        new Score(
+<b class="nc">&nbsp;                                line.split(&quot;,&quot;)[0],</b>
+<b class="nc">&nbsp;                                line.split(&quot;,&quot;)[1].replaceAll(&quot;\r&quot;, &quot;&quot;)</b>
+&nbsp;                        )
+&nbsp;                );
+<b class="nc">&nbsp;                count += 1;</b>
+&nbsp;            }
+&nbsp;            // Only return the top 10 values
+<b class="nc">&nbsp;            if (count == 10) {</b>
+<b class="nc">&nbsp;                break;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return scores;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Writes a player&#39;s score to the leaderboard at the correct position
+&nbsp;     * @param newName The name of the player
+&nbsp;     * @param newScore The score the player got
+&nbsp;     * @return True if the score was added to the leaderboard
+&nbsp;     */
+&nbsp;    public static boolean writeScore(String newName, int newScore) {
+<b class="nc">&nbsp;        Array&lt;Score&gt; scores = readValues();</b>
+<b class="nc">&nbsp;        FileHandle file = Gdx.files.local(&quot;leaderboard.txt&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        String stringToWrite = &quot;&quot;;</b>
+<b class="nc">&nbsp;        boolean scoreWritten = false;</b>
+<b class="nc">&nbsp;        int totalScoresWritten = 0;</b>
+&nbsp;
+&nbsp;        // Write values back to leaderboard, inserting the new score if
+&nbsp;        // the new score is greater than the value to be written
+&nbsp;
+<b class="nc">&nbsp;        for (Score score : scores) {</b>
+&nbsp;            // New score is greater
+<b class="nc">&nbsp;            if (newScore &gt; Integer.parseInt(score.score) &amp;&amp; !scoreWritten) {</b>
+<b class="nc">&nbsp;                stringToWrite += newName + &quot;,&quot; + newScore + &quot;\n&quot;;</b>
+<b class="nc">&nbsp;                scoreWritten = true;</b>
+<b class="nc">&nbsp;                totalScoresWritten++;</b>
+&nbsp;            }
+&nbsp;            // Write old score
+<b class="nc">&nbsp;            stringToWrite += score.name + &quot;,&quot; + score.score + &quot;\n&quot;;</b>
+<b class="nc">&nbsp;            totalScoresWritten++;</b>
+&nbsp;
+<b class="nc">&nbsp;            if (totalScoresWritten == 10) {</b>
+<b class="nc">&nbsp;                break;</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // Append to the end of the leaderboard
+<b class="nc">&nbsp;        if (totalScoresWritten &lt; 10 &amp;&amp; !scoreWritten) {</b>
+<b class="nc">&nbsp;            stringToWrite += newName + &quot;,&quot; + newScore;</b>
+<b class="nc">&nbsp;            scoreWritten = true;</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        file.writeString(stringToWrite, false);</b>
+&nbsp;
+<b class="nc">&nbsp;        return scoreWritten;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

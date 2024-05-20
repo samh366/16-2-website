@@ -1,0 +1,190 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > NPC</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.state</a>
+</div>
+
+<h1>Coverage Summary for Class: NPC (com.heslingtonhustle.state)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">NPC</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.state;
+&nbsp;
+&nbsp;import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+&nbsp;import com.badlogic.gdx.math.Vector2;
+&nbsp;import com.heslingtonhustle.renderer.CharacterRenderer;
+&nbsp;
+&nbsp;/**
+&nbsp; * Small class to store information about a loaded NPC
+&nbsp; */
+&nbsp;public class NPC {
+&nbsp;    private final Vector2 position;
+&nbsp;    private final String typeString;
+&nbsp;    private Facing direction;
+&nbsp;    private CharacterRenderer renderer;
+&nbsp;
+<b class="nc">&nbsp;    public NPC (Vector2 position, String typeString, Facing direction) {</b>
+<b class="nc">&nbsp;        this.position = position;</b>
+<b class="nc">&nbsp;        this.typeString = typeString;</b>
+<b class="nc">&nbsp;        this.direction = direction;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The centre coordinates of the NPC
+&nbsp;     */
+&nbsp;    public Vector2 getCentre() {
+<b class="nc">&nbsp;        if (renderer == null) return null;</b>
+&nbsp;
+<b class="nc">&nbsp;        return new Vector2(</b>
+<b class="nc">&nbsp;                position.x - renderer.getSize().x/2,</b>
+<b class="nc">&nbsp;                position.y - renderer.getSize().y/2</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Repositions the NPC based on where the player is
+&nbsp;     * Called after speaking to the NPC
+&nbsp;     *
+&nbsp;     * @param playerPos The centre position of the player
+&nbsp;     */
+&nbsp;    public void reposition(Vector2 playerPos) {
+<b class="nc">&nbsp;        Vector2 diff = playerPos.sub(getCentre());</b>
+&nbsp;
+<b class="nc">&nbsp;        if (Math.abs(diff.x) &gt; Math.abs(diff.y) &amp;&amp; diff.x &gt; 0) direction = Facing.RIGHT;</b>
+<b class="nc">&nbsp;        if (Math.abs(diff.x) &gt; Math.abs(diff.y) &amp;&amp; diff.x &lt; 0) direction = Facing.LEFT;</b>
+<b class="nc">&nbsp;        if (Math.abs(diff.x) &lt; Math.abs(diff.y) &amp;&amp; diff.y &gt; 0) direction = Facing.UP;</b>
+<b class="nc">&nbsp;        if (Math.abs(diff.x) &lt; Math.abs(diff.y) &amp;&amp; diff.y &lt; 0) direction = Facing.DOWN;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the string needed to identify the character on the character atlas sheet
+&nbsp;     * @return The type of NPC, &#39;player-x&#39;
+&nbsp;     */
+&nbsp;    public String getType() {
+<b class="nc">&nbsp;        return typeString;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gives the NPC a renderer to be able to be drawn to the screen
+&nbsp;     */
+&nbsp;    public void setRenderer(CharacterRenderer renderer) {
+<b class="nc">&nbsp;        this.renderer = renderer;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Renders the NPC to the screen
+&nbsp;     */
+&nbsp;    public void render(SpriteBatch batch) {
+<b class="nc">&nbsp;        renderer.render(batch, position.x, position.y, direction, false);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The direction the NPC is facing
+&nbsp;     */
+&nbsp;    public Facing getFacing() {
+<b class="nc">&nbsp;        return direction;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the direction the NPC is facing
+&nbsp;     * @param facing The direction to face
+&nbsp;     */
+&nbsp;    public void setFacing(Facing facing) {
+<b class="nc">&nbsp;        this.direction = facing;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

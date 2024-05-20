@@ -1,0 +1,250 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ClockTests</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.skloch.heshustle.tests</a>
+</div>
+
+<h1>Coverage Summary for Class: ClockTests (io.skloch.heshustle.tests)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ClockTests</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (81/81)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.skloch.heshustle.tests;
+&nbsp;
+&nbsp;import com.heslingtonhustle.state.Clock;
+&nbsp;import org.junit.Test;
+&nbsp;import org.junit.runner.RunWith;
+&nbsp;
+&nbsp;import static org.junit.Assert.assertEquals;
+&nbsp;
+<b class="fc">&nbsp;public class ClockTests {</b>
+&nbsp;    @Test
+&nbsp;    public void testIncrementDay() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        int newDay = 2;</b>
+<b class="fc">&nbsp;        int timeUnits = 480;</b>
+&nbsp;
+<b class="fc">&nbsp;        clock.incrementDay();</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(newDay, clock.getDay());</b>
+<b class="fc">&nbsp;        assertEquals(timeUnits, clock.getRawTime(), 0);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testDecrementDay() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        int newDay = 0;</b>
+&nbsp;
+<b class="fc">&nbsp;        clock.decrementDay();</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(newDay, clock.getDay());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testIncreaseTime() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        float speed = 1.5f;</b>
+<b class="fc">&nbsp;        float delta = 2f;</b>
+<b class="fc">&nbsp;        int newTimeUnits = 483;</b>
+<b class="fc">&nbsp;        int newDay = 1;</b>
+<b class="fc">&nbsp;        clock.setSpeed(speed);</b>
+&nbsp;
+<b class="fc">&nbsp;        clock.increaseTime(delta);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(newDay, clock.getDay());</b>
+<b class="fc">&nbsp;        assertEquals(newTimeUnits, clock.getRawTime(), 0);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testIncreaseTimeAtMidnight() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        float speed = 1.5f;</b>
+<b class="fc">&nbsp;        float delta = 640f;</b>
+<b class="fc">&nbsp;        int newTimeUnits = 0;</b>
+<b class="fc">&nbsp;        int newDay = 2;</b>
+<b class="fc">&nbsp;        clock.setSpeed(speed);</b>
+&nbsp;
+<b class="fc">&nbsp;        clock.increaseTime(delta);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(newDay, clock.getDay());</b>
+<b class="fc">&nbsp;        assertEquals(newTimeUnits, clock.getRawTime(), 0);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testGetTimeHourLessThanTwelve() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        int hour = 8;</b>
+<b class="fc">&nbsp;        String minutes = &quot;00&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(String.format(&quot;%d:%sam&quot;, hour, minutes), clock.getTime());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testGetTimeHourTwentyFour() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        float newTimeUnits = 1440f;</b>
+<b class="fc">&nbsp;        clock.setTime(newTimeUnits);</b>
+<b class="fc">&nbsp;        String minutes = &quot;00&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(String.format(&quot;12:%sam&quot;, minutes), clock.getTime());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testGetTimeHourZero() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        float newTimeUnits = 0f;</b>
+<b class="fc">&nbsp;        clock.setTime(newTimeUnits);</b>
+<b class="fc">&nbsp;        String minutes = &quot;00&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(String.format(&quot;12:%sam&quot;, minutes), clock.getTime());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testGetTimeHourTwelve() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        float newTimeUnits = 722f;</b>
+<b class="fc">&nbsp;        clock.setTime(newTimeUnits);</b>
+<b class="fc">&nbsp;        String minutes = &quot;02&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(String.format(&quot;12:%spm&quot;, minutes), clock.getTime());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testGetTimeHourMoreThanTwelve() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        float newTimeUnits = 932f;</b>
+<b class="fc">&nbsp;        int hour = 15;</b>
+<b class="fc">&nbsp;        clock.setTime(newTimeUnits);</b>
+<b class="fc">&nbsp;        String minutes = &quot;32&quot;;</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(String.format(&quot;%d:%spm&quot;, hour-12, minutes), clock.getTime());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testPassHoursSameDay() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        float hoursToPass = 2.5f;</b>
+<b class="fc">&nbsp;        float newUnits = 630f;</b>
+<b class="fc">&nbsp;        int newDay = 1;</b>
+&nbsp;
+<b class="fc">&nbsp;        clock.passHours(hoursToPass);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(newDay, clock.getDay());</b>
+<b class="fc">&nbsp;        assertEquals(newUnits, clock.getRawTime(), 0.0f);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testPassHoursNewDay() {
+<b class="fc">&nbsp;        Clock clock = new Clock();</b>
+<b class="fc">&nbsp;        float hoursToPass = 2.5f;</b>
+<b class="fc">&nbsp;        float setTimeUnits = 1390f;</b>
+<b class="fc">&nbsp;        float newTimeUnits = 100f;</b>
+<b class="fc">&nbsp;        int newDay = 2;</b>
+&nbsp;
+<b class="fc">&nbsp;        clock.setTime(setTimeUnits);</b>
+<b class="fc">&nbsp;        clock.passHours(hoursToPass);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(newDay, clock.getDay());</b>
+<b class="fc">&nbsp;        assertEquals(newTimeUnits, clock.getRawTime(), 0.0f);</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;}
+&nbsp;// public void passHours(float hours) {
+&nbsp;//        timeUnits += hours * 60;
+&nbsp;//        if (timeUnits &gt;= 1440) {
+&nbsp;//            timeUnits -= 1440;
+&nbsp;//            day += 1;
+&nbsp;//        }
+&nbsp;//    }
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

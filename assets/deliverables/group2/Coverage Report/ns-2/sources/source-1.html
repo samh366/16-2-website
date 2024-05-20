@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > KeyboardInputHandler</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.input</a>
+</div>
+
+<h1>Coverage Summary for Class: KeyboardInputHandler (com.heslingtonhustle.input)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">KeyboardInputHandler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (30/30)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.input;
+&nbsp;
+&nbsp;import com.badlogic.gdx.InputAdapter;
+&nbsp;import com.badlogic.gdx.Input.Keys;
+&nbsp;import com.heslingtonhustle.state.Action;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.HashSet;
+&nbsp;
+&nbsp;/**
+&nbsp; * Handles the user&#39;s inputs and translates these into Actions {@link Action} that the game can understand
+&nbsp; * The set heldActions contains Actions called by keys that are being held down
+&nbsp; * The set pressedActions only contains Actions called on the pressed frame, and should be wiped afterwards
+&nbsp; */
+&nbsp;public class KeyboardInputHandler extends InputAdapter implements InputHandler {
+&nbsp;    private final HashMap&lt;Integer, Action&gt; inputMap;
+&nbsp;    private final HashSet&lt;Action&gt; heldActions;
+&nbsp;    private final HashSet&lt;Action&gt; pressedActions;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Assigns default keys to Actions, initialises empty sets heldActions and pressedActions to grab actions from
+&nbsp;     */
+<b class="fc">&nbsp;    public KeyboardInputHandler() {</b>
+&nbsp;
+&nbsp;        // Maps keys to actions
+<b class="fc">&nbsp;        inputMap = new HashMap&lt;&gt;();</b>
+&nbsp;
+&nbsp;        // Sets for held and pressed Actions
+<b class="fc">&nbsp;        heldActions = new HashSet&lt;&gt;();</b>
+<b class="fc">&nbsp;        pressedActions = new HashSet&lt;&gt;();</b>
+&nbsp;
+&nbsp;        // Player movement keys
+<b class="fc">&nbsp;        inputMap.put(Keys.D, Action.MOVE_RIGHT);</b>
+<b class="fc">&nbsp;        inputMap.put(Keys.A, Action.MOVE_LEFT);</b>
+<b class="fc">&nbsp;        inputMap.put(Keys.W, Action.MOVE_UP);</b>
+<b class="fc">&nbsp;        inputMap.put(Keys.S, Action.MOVE_DOWN);</b>
+&nbsp;
+<b class="fc">&nbsp;        inputMap.put(Keys.RIGHT, Action.MOVE_RIGHT);</b>
+<b class="fc">&nbsp;        inputMap.put(Keys.LEFT, Action.MOVE_LEFT);</b>
+<b class="fc">&nbsp;        inputMap.put(Keys.UP, Action.MOVE_UP);</b>
+<b class="fc">&nbsp;        inputMap.put(Keys.DOWN, Action.MOVE_DOWN);</b>
+&nbsp;
+&nbsp;        // Other keys
+<b class="fc">&nbsp;        inputMap.put(Keys.SPACE, Action.INTERACT);</b>
+<b class="fc">&nbsp;        inputMap.put(Keys.ENTER, Action.INTERACT);</b>
+<b class="fc">&nbsp;        inputMap.put(Keys.E, Action.INTERACT);</b>
+<b class="fc">&nbsp;        inputMap.put(Keys.M, Action.MAP);</b>
+&nbsp;
+<b class="fc">&nbsp;        inputMap.put(Keys.ESCAPE, Action.PAUSE);</b>
+&nbsp;
+&nbsp;//        inputMap.put(Keys.COMMA, Action.DEBUGGING_ACTION1);
+&nbsp;//        inputMap.put(Keys.PERIOD, Action.DEBUGGING_ACTION2);
+&nbsp;//        inputMap.put(Keys.SLASH, Action.DEBUGGING_ACTION3);
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Removes the corresponding action of the key to the sets heldActions and pressedActions (if not cleared already)
+&nbsp;     *
+&nbsp;     * @param keycode one of the constants in {@link com.badlogic.gdx.Input.Keys}
+&nbsp;     * @return True if key corresponded to an actions, false otherwise
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean keyDown(int keycode) {
+<b class="fc">&nbsp;        if (!inputMap.containsKey(keycode)) return false;</b>
+&nbsp;
+<b class="fc">&nbsp;        heldActions.add(inputMap.get(keycode));</b>
+<b class="fc">&nbsp;        pressedActions.add(inputMap.get(keycode));</b>
+&nbsp;
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Adds the corresponding action of the key to the sets heldActions and pressedActions
+&nbsp;     *
+&nbsp;     * @param keycode one of the constants in {@link com.badlogic.gdx.Input.Keys}
+&nbsp;     * @return True if key corresponded to an actions, false otherwise
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public boolean keyUp(int keycode) {
+<b class="fc">&nbsp;        if (!inputMap.containsKey(keycode)) return false;</b>
+&nbsp;
+<b class="fc">&nbsp;        heldActions.remove(inputMap.get(keycode));</b>
+<b class="fc">&nbsp;        pressedActions.remove(inputMap.get(keycode));</b>
+&nbsp;
+<b class="fc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return Returns a set of the actions corresponding to the currently pressed keys
+&nbsp;     */
+&nbsp;    public HashSet&lt;Action&gt; getHeldActions() {
+<b class="fc">&nbsp;        return heldActions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The actions corresponding to the keys pressed on this frame only
+&nbsp;     */
+&nbsp;    public HashSet&lt;Action&gt; getPressedActions() {
+<b class="fc">&nbsp;        return pressedActions;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Resets the pressed actions for the next frame
+&nbsp;     */
+&nbsp;    public void resetPressedActions() {
+<b class="fc">&nbsp;        pressedActions.clear();</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

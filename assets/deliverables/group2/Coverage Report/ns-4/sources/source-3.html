@@ -1,0 +1,156 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TextureManager</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.renderer</a>
+</div>
+
+<h1>Coverage Summary for Class: TextureManager (com.heslingtonhustle.renderer)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TextureManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.renderer;
+&nbsp;
+&nbsp;
+&nbsp;import com.badlogic.gdx.Gdx;
+&nbsp;import com.badlogic.gdx.graphics.g2d.Animation;
+&nbsp;import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+&nbsp;import com.badlogic.gdx.graphics.g2d.TextureRegion;
+&nbsp;import com.badlogic.gdx.utils.Array;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;
+&nbsp;public class TextureManager {
+&nbsp;    /* This class is used to store textures and animations easily and be able to retrieve them by using a string as an identifier.
+&nbsp;    * This class is mainly intended to make animations easier to use as it automatically takes care of timing and frame selection. */
+&nbsp;
+&nbsp;
+&nbsp;    private final HashMap&lt;String, Animation&lt;TextureRegion&gt;&gt; animations;
+&nbsp;    private final HashMap&lt;String, TextureRegion&gt; staticTextures;
+&nbsp;    private float animationTime;
+&nbsp;
+<b class="nc">&nbsp;    public TextureManager() {</b>
+<b class="nc">&nbsp;        animationTime = 0f;</b>
+<b class="nc">&nbsp;        animations = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        staticTextures = new HashMap&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public TextureRegion retrieveTexture(String key) {
+<b class="nc">&nbsp;        animationTime += Gdx.graphics.getDeltaTime();</b>
+<b class="nc">&nbsp;        Animation&lt;TextureRegion&gt; animation = animations.get(key);</b>
+<b class="nc">&nbsp;        if (animation != null) {</b>
+&nbsp;            // We have an animation for this key. Return the current frame
+<b class="nc">&nbsp;            return animation.getKeyFrame(animationTime, true);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        TextureRegion texture = staticTextures.get(key);</b>
+<b class="nc">&nbsp;        if (texture != null) {</b>
+<b class="nc">&nbsp;            return texture;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        throw new NullPointerException(&quot;Texture has not been added&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addAnimation(String animationKey, Array&lt;TextureAtlas.AtlasRegion&gt; textureRegions, float speed) {
+<b class="nc">&nbsp;        animations.put(animationKey, new Animation&lt;&gt;(speed, textureRegions));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addAnimation(String animationKey, TextureRegion[] animationFrames, float speed) {
+<b class="nc">&nbsp;        animations.put(animationKey, new Animation&lt;TextureRegion&gt;(speed, animationFrames));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addTexture(String textureKey, TextureRegion texture) {
+<b class="nc">&nbsp;        staticTextures.put(textureKey, texture);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

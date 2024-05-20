@@ -1,0 +1,234 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > DialogueManagerTests</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">io.skloch.heshustle.tests</a>
+</div>
+
+<h1>Coverage Summary for Class: DialogueManagerTests (io.skloch.heshustle.tests)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DialogueManagerTests</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (74/74)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package io.skloch.heshustle.tests;
+&nbsp;
+&nbsp;import com.heslingtonhustle.sound.SoundController;
+&nbsp;import com.heslingtonhustle.state.Action;
+&nbsp;import com.heslingtonhustle.state.DialogueManager;
+&nbsp;import org.junit.Test;
+&nbsp;import org.junit.runner.RunWith;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;import static org.junit.Assert.*;
+&nbsp;
+&nbsp;@RunWith(GdxTestRunner.class)
+<b class="fc">&nbsp;public class DialogueManagerTests {</b>
+&nbsp;    @Test
+&nbsp;    public void testHandleActionMoveUp() {
+<b class="fc">&nbsp;        HashSet&lt;Action&gt; pressedActions = new HashSet&lt;Action&gt;();</b>
+<b class="fc">&nbsp;        pressedActions.add(Action.MOVE_UP);</b>
+<b class="fc">&nbsp;        SoundController soundController = new SoundController();</b>
+<b class="fc">&nbsp;        DialogueManager dialogueManager = new DialogueManager(soundController);</b>
+<b class="fc">&nbsp;        List&lt;String&gt; options = new ArrayList&lt;String&gt;();</b>
+<b class="fc">&nbsp;        options.add(&quot;option1&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option2&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option3&quot;);</b>
+<b class="fc">&nbsp;        dialogueManager.addDialogue(&quot;message&quot;, options);</b>
+<b class="fc">&nbsp;        int newSelectedOption = 1;</b>
+&nbsp;
+<b class="fc">&nbsp;        dialogueManager.handleAction(pressedActions);</b>
+<b class="fc">&nbsp;        dialogueManager.handleAction(pressedActions);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(newSelectedOption, dialogueManager.getSelectedOption());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testHandleActionMoveDown() {
+<b class="fc">&nbsp;        HashSet&lt;Action&gt; pressedActions = new HashSet&lt;Action&gt;();</b>
+<b class="fc">&nbsp;        pressedActions.add(Action.MOVE_DOWN);</b>
+<b class="fc">&nbsp;        SoundController soundController = new SoundController();</b>
+<b class="fc">&nbsp;        DialogueManager dialogueManager = new DialogueManager(soundController);</b>
+<b class="fc">&nbsp;        List&lt;String&gt; options = new ArrayList&lt;String&gt;();</b>
+<b class="fc">&nbsp;        options.add(&quot;option1&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option2&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option3&quot;);</b>
+<b class="fc">&nbsp;        dialogueManager.addDialogue(&quot;message&quot;, options);</b>
+<b class="fc">&nbsp;        int newSelectedOption = 2;</b>
+&nbsp;
+<b class="fc">&nbsp;        dialogueManager.handleAction(pressedActions);</b>
+<b class="fc">&nbsp;        dialogueManager.handleAction(pressedActions);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(newSelectedOption, dialogueManager.getSelectedOption());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    //public boolean isEmpty() {
+&nbsp;    //        return dialogueQueue.isEmpty();
+&nbsp;    //    }
+&nbsp;    @Test
+&nbsp;    public void testIsEmptyWhenEmpty() {
+<b class="fc">&nbsp;        SoundController soundController = new SoundController();</b>
+<b class="fc">&nbsp;        DialogueManager dialogueManager = new DialogueManager(soundController);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertTrue(dialogueManager.isEmpty());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testIsEmptyWhenNotEmpty() {
+<b class="fc">&nbsp;        SoundController soundController = new SoundController();</b>
+<b class="fc">&nbsp;        DialogueManager dialogueManager = new DialogueManager(soundController);</b>
+<b class="fc">&nbsp;        List&lt;String&gt; options = new ArrayList&lt;String&gt;();</b>
+<b class="fc">&nbsp;        options.add(&quot;option1&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option2&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option3&quot;);</b>
+<b class="fc">&nbsp;        dialogueManager.addDialogue(&quot;message&quot;, options);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertFalse(dialogueManager.isEmpty());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testGetMessageWhenEmptyQueue() {
+<b class="fc">&nbsp;        SoundController soundController = new SoundController();</b>
+<b class="fc">&nbsp;        DialogueManager dialogueManager = new DialogueManager(soundController);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertNull(dialogueManager.getMessage());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testGetMessageWhenExists() {
+<b class="fc">&nbsp;        SoundController soundController = new SoundController();</b>
+<b class="fc">&nbsp;        DialogueManager dialogueManager = new DialogueManager(soundController);</b>
+<b class="fc">&nbsp;        List&lt;String&gt; options = new ArrayList&lt;String&gt;();</b>
+<b class="fc">&nbsp;        options.add(&quot;option1&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option2&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option3&quot;);</b>
+<b class="fc">&nbsp;        String returnedMessage = &quot;message&quot;;</b>
+<b class="fc">&nbsp;        dialogueManager.addDialogue(returnedMessage, options);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(returnedMessage, dialogueManager.getMessage());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testGetOptionsWhenEmptyQueue() {
+<b class="fc">&nbsp;        SoundController soundController = new SoundController();</b>
+<b class="fc">&nbsp;        DialogueManager dialogueManager = new DialogueManager(soundController);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertNull(dialogueManager.getOptions());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testGetOptionsWhenExists() {
+<b class="fc">&nbsp;        SoundController soundController = new SoundController();</b>
+<b class="fc">&nbsp;        DialogueManager dialogueManager = new DialogueManager(soundController);</b>
+<b class="fc">&nbsp;        List&lt;String&gt; options = new ArrayList&lt;String&gt;();</b>
+<b class="fc">&nbsp;        options.add(&quot;option1&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option2&quot;);</b>
+<b class="fc">&nbsp;        options.add(&quot;option3&quot;);</b>
+<b class="fc">&nbsp;        String returnedMessage = &quot;message&quot;;</b>
+<b class="fc">&nbsp;        dialogueManager.addDialogue(returnedMessage, options);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(options, dialogueManager.getOptions());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Test
+&nbsp;    public void testSelectedOptionWhenEmptyQueue() {
+<b class="fc">&nbsp;        SoundController soundController = new SoundController();</b>
+<b class="fc">&nbsp;        DialogueManager dialogueManager = new DialogueManager(soundController);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(-1, dialogueManager.getSelectedOption());</b>
+<b class="fc">&nbsp;    }</b>
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

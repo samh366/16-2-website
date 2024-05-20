@@ -1,0 +1,362 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > AvatarSelectScreen</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.screens</a>
+</div>
+
+<h1>Coverage Summary for Class: AvatarSelectScreen (com.heslingtonhustle.screens)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AvatarSelectScreen</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/68)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">AvatarSelectScreen$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">AvatarSelectScreen$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/15)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/75)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.screens;
+&nbsp;
+&nbsp;import com.badlogic.gdx.Gdx;
+&nbsp;import com.badlogic.gdx.InputMultiplexer;
+&nbsp;import com.badlogic.gdx.Screen;
+&nbsp;import com.badlogic.gdx.graphics.GL20;
+&nbsp;import com.badlogic.gdx.graphics.OrthographicCamera;
+&nbsp;import com.badlogic.gdx.graphics.Texture;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.Actor;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.Stage;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.*;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+&nbsp;import com.badlogic.gdx.utils.Align;
+&nbsp;import com.badlogic.gdx.utils.Array;
+&nbsp;import com.badlogic.gdx.utils.ScreenUtils;
+&nbsp;import com.badlogic.gdx.utils.viewport.FitViewport;
+&nbsp;import com.badlogic.gdx.utils.viewport.Viewport;
+&nbsp;import com.heslingtonhustle.HeslingtonHustleGame;
+&nbsp;import com.heslingtonhustle.input.InputHandler;
+&nbsp;import com.heslingtonhustle.input.KeyboardInputHandler;
+&nbsp;import com.heslingtonhustle.sound.SoundController;
+&nbsp;import com.heslingtonhustle.sound.Sounds;
+&nbsp;import com.heslingtonhustle.state.Action;
+&nbsp;
+&nbsp;import java.util.HashSet;
+&nbsp;
+<b class="nc">&nbsp;public class AvatarSelectScreen implements Screen {</b>
+&nbsp;    private final HeslingtonHustleGame game;
+&nbsp;    private final SoundController soundController;
+&nbsp;    private final Skin skin;
+&nbsp;    private final Stage tutStage;
+&nbsp;    private final OrthographicCamera camera;
+&nbsp;    private final Viewport viewport;
+&nbsp;    private final Texture backgroundTexture;
+&nbsp;    private final InputHandler inputHandler;
+&nbsp;    private ImageButton avatar0, avatar1;
+&nbsp;
+&nbsp;    public static final String avatarMenuBackgroundAsset = &quot;Graphics/UI/Backgrounds/menu_background.jpg&quot;;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A screen to allow the player to select their avatar
+&nbsp;     * @param game The main game object
+&nbsp;     */
+<b class="nc">&nbsp;    public AvatarSelectScreen(HeslingtonHustleGame game) {</b>
+<b class="nc">&nbsp;        this.game = game;</b>
+<b class="nc">&nbsp;        this.soundController = game.soundController;</b>
+<b class="nc">&nbsp;        this.skin = game.skin;</b>
+&nbsp;
+&nbsp;        // An option screen to let the player adjust the volume of music and sound effects
+<b class="nc">&nbsp;        tutStage = new Stage(new FitViewport(game.width, game.height));</b>
+<b class="nc">&nbsp;        Gdx.input.setInputProcessor(tutStage);</b>
+&nbsp;
+&nbsp;        // Configure orthographic camera and viewport
+<b class="nc">&nbsp;        camera = new OrthographicCamera();</b>
+<b class="nc">&nbsp;        viewport = new FitViewport(game.width, game.height, camera);</b>
+<b class="nc">&nbsp;        camera.setToOrtho(false, game.width, game.height);</b>
+&nbsp;
+&nbsp;        // Background texture
+<b class="nc">&nbsp;        backgroundTexture = new Texture(avatarMenuBackgroundAsset);</b>
+<b class="nc">&nbsp;        Image backgroundImage = new Image(backgroundTexture);</b>
+<b class="nc">&nbsp;        tutStage.addActor(backgroundImage);</b>
+&nbsp;
+&nbsp;        // Inputs
+<b class="nc">&nbsp;        inputHandler = new KeyboardInputHandler();</b>
+<b class="nc">&nbsp;        InputMultiplexer inputMultiplexer = new InputMultiplexer();</b>
+<b class="nc">&nbsp;        inputMultiplexer.addProcessor(inputHandler);</b>
+<b class="nc">&nbsp;        inputMultiplexer.addProcessor(tutStage);</b>
+<b class="nc">&nbsp;        Gdx.input.setInputProcessor(inputMultiplexer);</b>
+&nbsp;
+<b class="nc">&nbsp;        createAvatarSelect();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Method to draw the options window and the volume sliders contained within.
+&nbsp;     */
+&nbsp;    private void createAvatarSelect() {
+&nbsp;        // Create the window
+<b class="nc">&nbsp;        Table mainTable = new Table();</b>
+<b class="nc">&nbsp;        mainTable.setFillParent(true);</b>
+<b class="nc">&nbsp;        tutStage.addActor(mainTable);</b>
+&nbsp;
+&nbsp;        // Title
+<b class="nc">&nbsp;        Label title = new Label(&quot;Choose Your Avatar&quot;, skin, &quot;leaderboardscore&quot;);</b>
+<b class="nc">&nbsp;        mainTable.add(title).top().padTop(30).colspan(3).padBottom(10);</b>
+<b class="nc">&nbsp;        mainTable.row();</b>
+&nbsp;
+&nbsp;        // Left button
+<b class="nc">&nbsp;        avatar0 = new ImageButton(skin, &quot;avatar0&quot;);</b>
+<b class="nc">&nbsp;        mainTable.add(avatar0).left().padRight(60);</b>
+<b class="nc">&nbsp;        avatar0.setChecked(true);</b>
+&nbsp;
+&nbsp;        // Right button
+<b class="nc">&nbsp;        avatar1 = new ImageButton(skin, &quot;avatar1&quot;);</b>
+<b class="nc">&nbsp;        mainTable.add(avatar1).right().padLeft(60);</b>
+<b class="nc">&nbsp;        mainTable.row();</b>
+&nbsp;
+&nbsp;        // Button group
+<b class="nc">&nbsp;        ButtonGroup&lt;Button&gt; buttonGroup = new ButtonGroup&lt;Button&gt;(avatar0, avatar1);</b>
+<b class="nc">&nbsp;        buttonGroup.setMaxCheckCount(1);</b>
+&nbsp;
+<b class="nc">&nbsp;        ChangeListener press = new ChangeListener() {</b>
+&nbsp;            @Override
+&nbsp;            public void changed(ChangeEvent event, Actor actor) {
+<b class="nc">&nbsp;                soundController.playSound(Sounds.OPTIONSWITCH);</b>
+&nbsp;            }
+&nbsp;        };
+&nbsp;
+<b class="nc">&nbsp;        avatar0.addListener(press);</b>
+<b class="nc">&nbsp;        avatar1.addListener(press);</b>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;        // Start game button
+<b class="nc">&nbsp;        TextButton playGameButton = new TextButton(&quot;Start game&quot;, skin);</b>
+<b class="nc">&nbsp;        playGameButton.addListener(new ChangeListener() {</b>
+&nbsp;            @Override
+&nbsp;            public void changed(ChangeEvent event, Actor actor) {
+<b class="nc">&nbsp;                soundController.playSound(Sounds.CONFIRM);</b>
+<b class="nc">&nbsp;                if (avatar0.isChecked()) {</b>
+<b class="nc">&nbsp;                    game.startGame(&quot;player-0&quot;);</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    game.startGame(&quot;player-1&quot;);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        });
+&nbsp;
+<b class="nc">&nbsp;        mainTable.add(playGameButton).colspan(3).prefWidth(320).padTop(15);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A method to render the options stage.
+&nbsp;     * @param delta The time in seconds since the last render.
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void render(float delta) {
+<b class="nc">&nbsp;        ScreenUtils.clear(0, 0, 0, 1);</b>
+<b class="nc">&nbsp;        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);</b>
+&nbsp;
+<b class="nc">&nbsp;        handleActions();</b>
+<b class="nc">&nbsp;        inputHandler.resetPressedActions();</b>
+&nbsp;
+<b class="nc">&nbsp;        tutStage.act(delta);</b>
+<b class="nc">&nbsp;        tutStage.draw();</b>
+&nbsp;
+<b class="nc">&nbsp;        camera.update();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    private void handleActions() {
+&nbsp;        // Get pressed actions
+<b class="nc">&nbsp;        HashSet&lt;Action&gt; actions = inputHandler.getPressedActions();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (actions.contains(Action.INTERACT)) {</b>
+&nbsp;            // Start
+<b class="nc">&nbsp;            soundController.playSound(Sounds.CONFIRM);</b>
+<b class="nc">&nbsp;            if (avatar0.isChecked()) {</b>
+<b class="nc">&nbsp;                game.startGame(&quot;player-0&quot;);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                game.startGame(&quot;player-1&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } else if (actions.contains(Action.MOVE_LEFT)) {</b>
+<b class="nc">&nbsp;            avatar0.setChecked(true);</b>
+<b class="nc">&nbsp;            avatar1.setChecked(false);</b>
+<b class="nc">&nbsp;            soundController.playSound(Sounds.OPTIONSWITCH);</b>
+<b class="nc">&nbsp;        } else if (actions.contains(Action.MOVE_RIGHT)) {</b>
+<b class="nc">&nbsp;            avatar0.setChecked(false);</b>
+<b class="nc">&nbsp;            avatar1.setChecked(true);</b>
+<b class="nc">&nbsp;            soundController.playSound(Sounds.OPTIONSWITCH);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void show() {
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Method to resize the stage if the viewport changes.
+&nbsp;     * @param width The width of the game screen
+&nbsp;     * @param height The height of the game screen
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void resize(int width, int height){
+<b class="nc">&nbsp;        tutStage.getViewport().update(width, height);</b>
+<b class="nc">&nbsp;        viewport.update(width, height);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void pause() {
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void resume() {
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public void hide() {
+&nbsp;
+<b class="nc">&nbsp;    }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Method which disposes anything no longer required when changing screens
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void dispose(){
+<b class="nc">&nbsp;        tutStage.dispose();</b>
+<b class="nc">&nbsp;        backgroundTexture.dispose();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

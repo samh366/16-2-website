@@ -1,0 +1,325 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > PauseMenu</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.screens</a>
+</div>
+
+<h1>Coverage Summary for Class: PauseMenu (com.heslingtonhustle.screens)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PauseMenu</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/39)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PauseMenu$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">PauseMenu$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">PauseMenu$3</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/49)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.screens;
+&nbsp;
+&nbsp;import com.badlogic.gdx.Gdx;
+&nbsp;import com.badlogic.gdx.Screen;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.Actor;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.Stage;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.Table;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+&nbsp;import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+&nbsp;import com.badlogic.gdx.utils.viewport.FitViewport;
+&nbsp;import com.heslingtonhustle.HeslingtonHustleGame;
+&nbsp;import com.heslingtonhustle.sound.SoundController;
+&nbsp;import com.heslingtonhustle.sound.Sounds;
+&nbsp;
+<b class="nc">&nbsp;public class PauseMenu {</b>
+&nbsp;    private final Screen playScreen;
+&nbsp;    private final HeslingtonHustleGame game;
+&nbsp;
+&nbsp;    private final Skin skin;
+&nbsp;    private final SoundController soundController;
+&nbsp;
+&nbsp;    private final Stage stage;
+&nbsp;    private Table optionsTable;
+&nbsp;    private boolean isVisible;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A class to display the pause menu on screen when it is called from PlayScreen.
+&nbsp;     * @param parentClass The parent screen.
+&nbsp;     * @param game The main game object.
+&nbsp;     */
+<b class="nc">&nbsp;    public PauseMenu(Screen parentClass, HeslingtonHustleGame game) {</b>
+<b class="nc">&nbsp;        playScreen = parentClass;</b>
+<b class="nc">&nbsp;        this.game = game;</b>
+&nbsp;
+<b class="nc">&nbsp;        this.soundController = game.soundController;</b>
+<b class="nc">&nbsp;        this.skin = game.skin;</b>
+&nbsp;
+<b class="nc">&nbsp;        isVisible = false;</b>
+<b class="nc">&nbsp;        stage = new Stage(new FitViewport(game.width, game.height));</b>
+<b class="nc">&nbsp;        Gdx.input.setInputProcessor(stage);</b>
+&nbsp;
+<b class="nc">&nbsp;        createTable();</b>
+<b class="nc">&nbsp;        addOptions();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A method to create a table for the pause menu options to be displayed in.
+&nbsp;     */
+&nbsp;    private void createTable() {
+<b class="nc">&nbsp;        optionsTable = new Table();</b>
+<b class="nc">&nbsp;        optionsTable.setFillParent(true);</b>
+<b class="nc">&nbsp;        stage.addActor(optionsTable);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A method to add the options into the pause menu&#39;s table and perform the corresponding actions if
+&nbsp;     * they&#39;re clicked.
+&nbsp;     */
+&nbsp;    private void addOptions() {
+&nbsp;        // Resume button
+<b class="nc">&nbsp;        TextButton resumeButton = new TextButton(&quot;Resume&quot;, skin);</b>
+<b class="nc">&nbsp;        resumeButton.addListener(new ChangeListener() {</b>
+&nbsp;            @Override
+&nbsp;            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+<b class="nc">&nbsp;                isVisible = false;</b>
+<b class="nc">&nbsp;                soundController.playSound(Sounds.CONFIRM);</b>
+<b class="nc">&nbsp;                playScreen.resume();</b>
+&nbsp;            }
+&nbsp;        });
+<b class="nc">&nbsp;        optionsTable.add(resumeButton).fillX().uniformX().prefWidth(350).padBottom(10);</b>
+<b class="nc">&nbsp;        optionsTable.row();</b>
+&nbsp;
+&nbsp;        // Options button
+<b class="nc">&nbsp;        TextButton optionsButton = new TextButton(&quot;Settings&quot;, skin);</b>
+<b class="nc">&nbsp;        optionsButton.addListener(new ChangeListener() {</b>
+&nbsp;            @Override
+&nbsp;            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+<b class="nc">&nbsp;                soundController.playSound(Sounds.CONFIRM);</b>
+<b class="nc">&nbsp;                game.switchScreen(AvailableScreens.OptionsScreen, true);</b>
+&nbsp;            }
+&nbsp;        });
+<b class="nc">&nbsp;        optionsTable.add(optionsButton).fillX().uniformX().prefWidth(350).padBottom(10);</b>
+<b class="nc">&nbsp;        optionsTable.row();</b>
+&nbsp;
+&nbsp;
+&nbsp;        // Menu Button
+<b class="nc">&nbsp;        TextButton mainMenuButton = new TextButton(&quot;Menu&quot;, skin);</b>
+<b class="nc">&nbsp;        mainMenuButton.addListener(new ChangeListener() {</b>
+&nbsp;            @Override
+&nbsp;            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+<b class="nc">&nbsp;                soundController.playSound(Sounds.CONFIRM);</b>
+<b class="nc">&nbsp;                game.switchScreen(AvailableScreens.MenuScreen, false);</b>
+&nbsp;            }
+&nbsp;        });
+<b class="nc">&nbsp;        optionsTable.add(mainMenuButton).fillX().uniformX();</b>
+<b class="nc">&nbsp;        optionsTable.row();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A method which makes the pause menu visible when needed.
+&nbsp;     */
+&nbsp;    public void showPauseMenu() {
+<b class="nc">&nbsp;        isVisible = true;</b>
+<b class="nc">&nbsp;        optionsTable.setVisible(true);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A method which hides the pause menu when no longer needed.
+&nbsp;     */
+&nbsp;    public void hidePauseMenu() {
+<b class="nc">&nbsp;        isVisible = false;</b>
+<b class="nc">&nbsp;        optionsTable.setVisible(false);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * A method to render the pause stage, acting on delta.
+&nbsp;     */
+&nbsp;    public void render() {
+<b class="nc">&nbsp;        if (isVisible) {</b>
+<b class="nc">&nbsp;            stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));</b>
+<b class="nc">&nbsp;            stage.draw();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The current stage
+&nbsp;     */
+&nbsp;    public Stage GetStage() {
+<b class="nc">&nbsp;        return stage;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Correctly resizes the onscreen elements when the window is resized
+&nbsp;     * @param width The width of the game screen.
+&nbsp;     * @param height The height of the game screen.
+&nbsp;     */
+&nbsp;    public void resize(int width, int height) {
+<b class="nc">&nbsp;        stage.getCamera().viewportWidth = Gdx.graphics.getWidth();</b>
+<b class="nc">&nbsp;        stage.getCamera().viewportHeight = Gdx.graphics.getHeight();</b>
+<b class="nc">&nbsp;        stage.getViewport().update(width, height, true);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Method which disposes anything no longer required when changing screens
+&nbsp;     */
+&nbsp;    public void dispose() {
+<b class="nc">&nbsp;        stage.dispose();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return True if the pause menu is visible
+&nbsp;     */
+&nbsp;    public boolean isVisible() {
+<b class="nc">&nbsp;        return isVisible;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,582 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > MapManager</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.heslingtonhustle.map</a>
+</div>
+
+<h1>Coverage Summary for Class: MapManager (com.heslingtonhustle.map)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MapManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/26)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/175)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package com.heslingtonhustle.map;
+&nbsp;
+&nbsp;import com.badlogic.gdx.Gdx;
+&nbsp;import com.badlogic.gdx.graphics.g2d.BitmapFont;
+&nbsp;import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+&nbsp;import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+&nbsp;import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+&nbsp;import com.badlogic.gdx.maps.MapLayer;
+&nbsp;import com.badlogic.gdx.maps.MapObject;
+&nbsp;import com.badlogic.gdx.maps.MapObjects;
+&nbsp;import com.badlogic.gdx.maps.MapProperties;
+&nbsp;import com.badlogic.gdx.maps.objects.RectangleMapObject;
+&nbsp;import com.badlogic.gdx.maps.tiled.TiledMap;
+&nbsp;import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+&nbsp;import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+&nbsp;import com.badlogic.gdx.math.Rectangle;
+&nbsp;import com.badlogic.gdx.math.Vector2;
+&nbsp;import com.badlogic.gdx.utils.IntArray;
+&nbsp;import com.badlogic.gdx.utils.Disposable;
+&nbsp;import com.heslingtonhustle.renderer.CharacterRenderer;
+&nbsp;import com.heslingtonhustle.state.Facing;
+&nbsp;import com.heslingtonhustle.state.NPC;
+&nbsp;
+&nbsp;import java.util.HashMap;
+&nbsp;import java.util.HashSet;
+&nbsp;
+&nbsp;/**
+&nbsp; * Facilitates communication about maps between the State and the Renderer.
+&nbsp; * Caches loaded maps, map renderers, and collision data.
+&nbsp; */
+&nbsp;public class MapManager implements Disposable {
+&nbsp;    private TiledMap currentMap;
+&nbsp;    private final TmxMapLoader mapLoader;
+&nbsp;    private final HashMap&lt;String, TiledMap&gt; loadedMaps;
+&nbsp;    private final HashMap&lt;TiledMap, OrthogonalTiledMapRenderer&gt; loadedMapRenderers;
+&nbsp;    private ShapeRenderer collisionRenderer;
+&nbsp;    private MapObjects collisionObjects;
+&nbsp;    private MapObjects triggerObjects;
+&nbsp;    private MapObjects labelObjects;
+&nbsp;    private HashMap&lt;MapProperties, NPC&gt; NPCs;
+&nbsp;    private int[] backgroundLayers;
+&nbsp;    private int[] foregroundLayers;
+&nbsp;    private final TextureAtlas npcAtlas;
+&nbsp;    private final BitmapFont labelFont;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Instantiates a new map manager to manage loading and switching
+&nbsp;     * between maps loaded from Tiled
+&nbsp;     */
+<b class="nc">&nbsp;    public MapManager() {</b>
+<b class="nc">&nbsp;        mapLoader = new TmxMapLoader();</b>
+<b class="nc">&nbsp;        loadedMaps = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        loadedMapRenderers = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        npcAtlas = new TextureAtlas(&quot;Players/npcs.atlas&quot;);</b>
+<b class="nc">&nbsp;        labelFont = new BitmapFont(Gdx.files.internal(&quot;Fonts/labelfont.fnt&quot;),false);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Loads in the given map and the layers for collisions, NPCs
+&nbsp;     * and triggers.
+&nbsp;     * Also differentiates between foreground and background layers
+&nbsp;     * @param path The filepath of the map to load
+&nbsp;     */
+&nbsp;    public void loadMap(String path) {
+<b class="nc">&nbsp;        if (!loadedMaps.containsKey(path)) {</b>
+<b class="nc">&nbsp;            loadedMaps.put(path, mapLoader.load(path));</b>
+&nbsp;        }
+<b class="nc">&nbsp;        currentMap = loadedMaps.get(path);</b>
+&nbsp;
+&nbsp;        // Get collidable objects
+&nbsp;        try {
+<b class="nc">&nbsp;            MapLayer collisionLayer = currentMap.getLayers().get(&quot;Collisions&quot;);</b>
+<b class="nc">&nbsp;            collisionObjects = collisionLayer.getObjects();</b>
+<b class="nc">&nbsp;        } catch (NullPointerException e) {</b>
+<b class="nc">&nbsp;            Gdx.app.debug(&quot;DEBUG&quot;, &quot;NO COLLISION LAYER FOUND!&quot;);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // Get triggerable objects
+&nbsp;        try {
+<b class="nc">&nbsp;            MapLayer triggerLayer = currentMap.getLayers().get(&quot;Triggers&quot;);</b>
+<b class="nc">&nbsp;            triggerObjects = triggerLayer.getObjects();</b>
+<b class="nc">&nbsp;        } catch (NullPointerException e) {</b>
+<b class="nc">&nbsp;            Gdx.app.debug(&quot;DEBUG&quot;, &quot;NO TRIGGER LAYER FOUND!&quot;);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // Get NPCs
+&nbsp;        try {
+<b class="nc">&nbsp;            MapLayer triggerLayer = currentMap.getLayers().get(&quot;NPCs&quot;);</b>
+<b class="nc">&nbsp;            createNPCs(triggerLayer.getObjects());</b>
+<b class="nc">&nbsp;        } catch (NullPointerException e) {</b>
+<b class="nc">&nbsp;            Gdx.app.debug(&quot;DEBUG&quot;, &quot;NO NPC LAYER FOUND!&quot;);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // Get labels
+&nbsp;        try {
+<b class="nc">&nbsp;            MapLayer labelLayer = currentMap.getLayers().get(&quot;Labels&quot;);</b>
+<b class="nc">&nbsp;            labelObjects = labelLayer.getObjects();</b>
+<b class="nc">&nbsp;        } catch (NullPointerException e) {</b>
+<b class="nc">&nbsp;            labelObjects = null;</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+&nbsp;        // Get which layers are foreground and which are background
+&nbsp;
+<b class="nc">&nbsp;        IntArray foreground = new IntArray(true, currentMap.getLayers().getCount());</b>
+<b class="nc">&nbsp;        IntArray background = new IntArray(true, currentMap.getLayers().getCount());</b>
+&nbsp;
+&nbsp;        // Foreground and background
+<b class="nc">&nbsp;        for (int i=0; i &lt; currentMap.getLayers().getCount(); i++) {</b>
+<b class="nc">&nbsp;            MapProperties properties = currentMap.getLayers().get(i).getProperties();</b>
+<b class="nc">&nbsp;            if (properties.containsKey(&quot;foreground&quot;)) {</b>
+&nbsp;                // If foreground property is true
+<b class="nc">&nbsp;                if ((boolean) properties.get(&quot;foreground&quot;)) {</b>
+<b class="nc">&nbsp;                    foreground.add(i);</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    background.add(i);</b>
+&nbsp;                }
+&nbsp;            } else {
+<b class="nc">&nbsp;                background.add(i);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        backgroundLayers = background.toArray();</b>
+<b class="nc">&nbsp;        foregroundLayers = foreground.toArray();</b>
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates NPC classes from loaded NPC objects from Tiled
+&nbsp;     * @param NPCObjects The loaded NPCs from the NPC layer
+&nbsp;     */
+&nbsp;    private void createNPCs(MapObjects NPCObjects) {
+<b class="nc">&nbsp;        NPCs = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        for (MapObject npcObject : NPCObjects) {</b>
+&nbsp;            // Load info
+<b class="nc">&nbsp;            Facing[] directions = new Facing[]{Facing.UP, Facing.RIGHT, Facing.DOWN, Facing.LEFT};</b>
+<b class="nc">&nbsp;            MapProperties props = npcObject.getProperties();</b>
+&nbsp;
+&nbsp;            try {
+&nbsp;                // Create a new NPC
+<b class="nc">&nbsp;                NPC character = new NPC(</b>
+<b class="nc">&nbsp;                        new Vector2((float) props.get(&quot;x&quot;), (float) props.get(&quot;y&quot;)),</b>
+<b class="nc">&nbsp;                        (String) props.get(&quot;type&quot;),</b>
+<b class="nc">&nbsp;                        directions[(int) props.get(&quot;direction&quot;)]</b>
+&nbsp;                );
+&nbsp;
+&nbsp;                // Give it a renderer
+<b class="nc">&nbsp;                character.setRenderer(</b>
+&nbsp;                        new CharacterRenderer(
+<b class="nc">&nbsp;                                worldToPixelValue(0.9f),</b>
+<b class="nc">&nbsp;                                worldToPixelValue(0.9f),</b>
+&nbsp;                                npcAtlas,
+<b class="nc">&nbsp;                                character.getType(),</b>
+&nbsp;                                true
+&nbsp;                        ));
+&nbsp;
+<b class="nc">&nbsp;                NPCs.put(npcObject.getProperties(), character);</b>
+&nbsp;                // Also add a trigger
+<b class="nc">&nbsp;                if (npcObject.getProperties().containsKey(&quot;silent&quot;)) {</b>
+<b class="nc">&nbsp;                    if (!npcObject.getProperties().get(&quot;silent&quot;, Boolean.class)) {</b>
+<b class="nc">&nbsp;                        triggerObjects.add(npcObject);</b>
+&nbsp;                    }
+&nbsp;                } else {
+<b class="nc">&nbsp;                    triggerObjects.add(npcObject);</b>
+&nbsp;                }
+&nbsp;
+<b class="nc">&nbsp;                collisionObjects.add(npcObject);</b>
+&nbsp;
+<b class="nc">&nbsp;            } catch (NullPointerException e) {</b>
+<b class="nc">&nbsp;                Gdx.app.debug(&quot;DEBUG&quot;, &quot;ERROR LOADING NPC!&quot;);</b>
+<b class="nc">&nbsp;            }</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Renders all the NPCs
+&nbsp;     * @param batch The sprite batch to render to
+&nbsp;     */
+&nbsp;    public void renderNPCs(SpriteBatch batch) {
+<b class="nc">&nbsp;        for (MapProperties object : NPCs.keySet()) {</b>
+<b class="nc">&nbsp;            NPCs.get(object).render(batch);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Rotates an NPC based on the player&#39;s centre point
+&nbsp;     * @param npc The properties of the NPC to rotate
+&nbsp;     * @param playerCentre The current centre position of the player
+&nbsp;     */
+&nbsp;    public void rotateNPC(MapProperties npc, Vector2 playerCentre) {
+<b class="nc">&nbsp;        NPCs.get(npc).reposition(playerCentre);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the layers that should be rendered behind the player
+&nbsp;     * @return An int list of layer indices
+&nbsp;     */
+&nbsp;    public int[] getBackgroundLayers() {
+<b class="nc">&nbsp;        return backgroundLayers;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Gets the layers that should be rendered in front of the player
+&nbsp;     * @return An int list of layer indices
+&nbsp;     */
+&nbsp;    public int[] getForegroundLayers() {
+<b class="nc">&nbsp;        return foregroundLayers;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public OrthogonalTiledMapRenderer getCurrentMapRenderer(SpriteBatch spriteBatch) {
+<b class="nc">&nbsp;        if (currentMap == null) return null;</b>
+&nbsp;
+<b class="nc">&nbsp;        if (!loadedMapRenderers.containsKey(currentMap)) {</b>
+<b class="nc">&nbsp;            loadedMapRenderers.put(currentMap, new OrthogonalTiledMapRenderer(currentMap, spriteBatch));</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return loadedMapRenderers.get(currentMap);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * DEBUG - Draws the hitboxes of colllsion and trigger objects
+&nbsp;     * over the map.
+&nbsp;     * Collision are red and triggers are blue
+&nbsp;     */
+&nbsp;    public void drawObjectHitboxes() {
+&nbsp;        // This method gets the renderer that is used to show the collision rectangles and trigger rectangles
+&nbsp;        // for debugging purposes
+<b class="nc">&nbsp;        if (collisionRenderer == null) {</b>
+<b class="nc">&nbsp;            collisionRenderer = new ShapeRenderer();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        collisionRenderer.begin(ShapeRenderer.ShapeType.Filled);</b>
+<b class="nc">&nbsp;        if (collisionObjects != null) {</b>
+<b class="nc">&nbsp;            collisionRenderer.setColor(255, 0, 0, 50);</b>
+<b class="nc">&nbsp;            for (RectangleMapObject rectangleObject : collisionObjects.getByType(RectangleMapObject.class)) {</b>
+<b class="nc">&nbsp;                Rectangle collisionRectangle = rectangleObject.getRectangle();</b>
+<b class="nc">&nbsp;                collisionRenderer.rect(collisionRectangle.x, collisionRectangle.y, collisionRectangle.width, collisionRectangle.height);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        if (triggerObjects != null) {</b>
+<b class="nc">&nbsp;            collisionRenderer.setColor(0, 0, 255, 50);</b>
+<b class="nc">&nbsp;            for (RectangleMapObject rectangleObject : triggerObjects.getByType(RectangleMapObject.class)) {</b>
+<b class="nc">&nbsp;                Rectangle triggerRectangle = rectangleObject.getRectangle();</b>
+<b class="nc">&nbsp;                collisionRenderer.rect(triggerRectangle.x, triggerRectangle.y, triggerRectangle.width, triggerRectangle.height);</b>
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        collisionRenderer.end();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The shape renderer the map uses for debugging purposes
+&nbsp;     */
+&nbsp;    public ShapeRenderer getCollisionRenderer() {
+<b class="nc">&nbsp;        if (collisionRenderer == null) {</b>
+<b class="nc">&nbsp;            collisionRenderer = new ShapeRenderer();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return collisionRenderer;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Finds the nearest trigger the player is overlapping
+&nbsp;     * @param playerHitbox The player&#39;s trigger hitbox
+&nbsp;     * @return The MapProperties of the nearest trigger
+&nbsp;     */
+&nbsp;    public MapProperties getNearestTrigger(Rectangle playerHitbox) {
+<b class="nc">&nbsp;        if (triggerObjects == null) {</b>
+<b class="nc">&nbsp;            return null;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        playerHitbox = worldRectangleToPixelRectangle(playerHitbox);</b>
+&nbsp;        // The distance of the nearest trigger
+<b class="nc">&nbsp;        float closestDistance = -1f;</b>
+<b class="nc">&nbsp;        MapProperties closestObject = null;</b>
+&nbsp;
+<b class="nc">&nbsp;        for (MapObject object : triggerObjects) {</b>
+<b class="nc">&nbsp;            if (object instanceof RectangleMapObject) {</b>
+&nbsp;                // Only calc if the trigger box overlaps the player
+<b class="nc">&nbsp;                Rectangle objRect = ((RectangleMapObject) object).getRectangle();</b>
+<b class="nc">&nbsp;                if (playerHitbox.overlaps(objRect)) {</b>
+<b class="nc">&nbsp;                    float distance = distanceBetween(objRect, playerHitbox);</b>
+<b class="nc">&nbsp;                    if (closestObject == null || distance &lt; closestDistance) {</b>
+<b class="nc">&nbsp;                        closestObject = object.getProperties();</b>
+<b class="nc">&nbsp;                        closestDistance = distance;</b>
+&nbsp;                    }
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+&nbsp;
+<b class="nc">&nbsp;        return closestObject;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Renders any layers the map may have to the screen
+&nbsp;     * @param batch The sprite batch to render to
+&nbsp;     */
+&nbsp;    public void renderLabels(SpriteBatch batch) {
+<b class="nc">&nbsp;        if (labelObjects == null) return;</b>
+<b class="nc">&nbsp;        for (MapObject object : labelObjects) {</b>
+<b class="nc">&nbsp;            MapProperties props = object.getProperties();</b>
+<b class="nc">&nbsp;            float x = props.get(&quot;x&quot;, Float.class);</b>
+<b class="nc">&nbsp;            float y = props.get(&quot;y&quot;, Float.class);</b>
+&nbsp;
+<b class="nc">&nbsp;            labelFont.draw(batch, props.get(&quot;text&quot;, String.class), x, y);</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Finds the coordinates of the spawn rectangle on the spawn layer
+&nbsp;     * @return The spawn position to give to the player
+&nbsp;     */
+&nbsp;    public Vector2 getSpawnPoint() {
+<b class="nc">&nbsp;        MapLayer spawnLayer = currentMap.getLayers().get(&quot;Spawn&quot;);</b>
+<b class="nc">&nbsp;        if (spawnLayer == null) {</b>
+<b class="nc">&nbsp;            return new Vector2(0, 0);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        for (MapObject object : spawnLayer.getObjects()) {</b>
+&nbsp;            // Return the coordinates of the first object
+<b class="nc">&nbsp;            MapProperties properties = object.getProperties();</b>
+<b class="nc">&nbsp;            if (properties == null) return new Vector2(0, 0);</b>
+&nbsp;
+<b class="nc">&nbsp;            return new Vector2(</b>
+<b class="nc">&nbsp;                    pixelToWorldValue((float) properties.get(&quot;x&quot;)),</b>
+<b class="nc">&nbsp;                    pixelToWorldValue((float) properties.get(&quot;y&quot;))</b>
+&nbsp;            );
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        return new Vector2(0, 0);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the centre of the map in player&#39;s relative pixels
+&nbsp;     * @return A 2D vector representing the centre of the map
+&nbsp;     */
+&nbsp;    public Vector2 getCentre() {
+<b class="nc">&nbsp;        if (currentMap == null) return null;</b>
+&nbsp;
+<b class="nc">&nbsp;        MapProperties props = currentMap.getProperties();</b>
+&nbsp;
+<b class="nc">&nbsp;        return new Vector2(</b>
+<b class="nc">&nbsp;                worldToPixelValue(props.get(&quot;width&quot;, Integer.class) / 2f),</b>
+<b class="nc">&nbsp;                worldToPixelValue(props.get(&quot;height&quot;, Integer.class) / 2f)</b>
+&nbsp;        );
+&nbsp;
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Calculates the distance between the centre of two rectangles
+&nbsp;     * @param rect1 The first rectangle
+&nbsp;     * @param rect2 The second rectangle
+&nbsp;     * @return The distance between the centre of the two rectangles
+&nbsp;     */
+&nbsp;    private float distanceBetween(Rectangle rect1, Rectangle rect2) {
+<b class="nc">&nbsp;        Vector2 centres1 = new Vector2(rect1.width / 2 + rect1.x, rect1.height / 2 + rect1.y);</b>
+<b class="nc">&nbsp;        Vector2 centres2 = new Vector2(rect2.width / 2 +  rect2.x, rect2.height / 2 + rect2.y);</b>
+&nbsp;
+<b class="nc">&nbsp;        return (float) Math.sqrt((Math.pow((centres1.x - centres2.x), 2) + Math.pow((centres1.y - centres2.y), 2)));</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return Returns the tile width and height of the current loaded map
+&nbsp;     */
+&nbsp;    public Vector2 getCurrentMapTileDimensions() {
+<b class="nc">&nbsp;        if (currentMap == null) {</b>
+<b class="nc">&nbsp;            throw new NullPointerException(&quot;There is no currently loaded map!&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return new Vector2(</b>
+<b class="nc">&nbsp;                (int)currentMap.getProperties().get(&quot;tilewidth&quot;),</b>
+<b class="nc">&nbsp;                (int)currentMap.getProperties().get(&quot;tileheight&quot;)</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The dimensions of the current loaded map
+&nbsp;     */
+&nbsp;    public Vector2 getCurrentMapWorldDimensions() {
+<b class="nc">&nbsp;        if (currentMap == null) {</b>
+<b class="nc">&nbsp;            throw new NullPointerException(&quot;There is no currently loaded map!&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return new Vector2(</b>
+<b class="nc">&nbsp;                (int)currentMap.getProperties().get(&quot;width&quot;),</b>
+<b class="nc">&nbsp;                (int)currentMap.getProperties().get(&quot;height&quot;)</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Takes a player&#39;s coordinates and translates it to map coordinates
+&nbsp;     * @param worldCoords The player&#39;s coordinates
+&nbsp;     * @return The equivalent of these coordinates in the maps coordinate system
+&nbsp;     */
+&nbsp;    public Vector2 worldToPixelCoords(Vector2 worldCoords) {
+<b class="nc">&nbsp;        return new Vector2(</b>
+<b class="nc">&nbsp;                worldCoords.x * getCurrentMapTileDimensions().x,</b>
+<b class="nc">&nbsp;                worldCoords.y * getCurrentMapTileDimensions().y</b>
+&nbsp;        );
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Converts a player&#39;s single coordinate to the map&#39;s coordinate
+&nbsp;     * @param worldValue The value to translate
+&nbsp;     * @return The translated value
+&nbsp;     */
+&nbsp;    public float worldToPixelValue(float worldValue) {
+<b class="nc">&nbsp;        return worldValue * getCurrentMapTileDimensions().x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Translates a world variable to the player&#39;s coordinate system
+&nbsp;     * @param pixelValue The value to convert
+&nbsp;     * @return The converted value
+&nbsp;     */
+&nbsp;    public float pixelToWorldValue(float pixelValue) {
+<b class="nc">&nbsp;        return pixelValue / getCurrentMapTileDimensions().x;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Rectangle worldRectangleToPixelRectangle(Rectangle rectangle) {
+<b class="nc">&nbsp;        float x = rectangle.x * getCurrentMapTileDimensions().x;</b>
+<b class="nc">&nbsp;        float y = rectangle.y * getCurrentMapTileDimensions().y;</b>
+<b class="nc">&nbsp;        float width = rectangle.width * getCurrentMapTileDimensions().x;</b>
+<b class="nc">&nbsp;        float height = rectangle.height * getCurrentMapTileDimensions().y;</b>
+<b class="nc">&nbsp;        return new Rectangle(x, y, width, height);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Rectangle pixelToWorldRectangle(Rectangle rectangle) {
+<b class="nc">&nbsp;        float x = rectangle.x / getCurrentMapTileDimensions().x;</b>
+<b class="nc">&nbsp;        float y = rectangle.y / getCurrentMapTileDimensions().y;</b>
+<b class="nc">&nbsp;        float width = rectangle.width / getCurrentMapTileDimensions().x;</b>
+<b class="nc">&nbsp;        float height = rectangle.height / getCurrentMapTileDimensions().y;</b>
+<b class="nc">&nbsp;        return new Rectangle(x, y, width, height);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns a set of rectangles the player is overlapping
+&nbsp;     * @param playerRectangle The player&#39;s collision rectangles
+&nbsp;     * @return A set of rectangles, may be empty
+&nbsp;     */
+&nbsp;    public HashSet&lt;Rectangle&gt; getOverlappingRectangles(Rectangle playerRectangle) {
+&nbsp;        // For each rectangle in the collisions layer, check whether the player rectangle intercepts
+<b class="nc">&nbsp;        HashSet&lt;Rectangle&gt; overlaps = new HashSet&lt;&gt;();</b>
+<b class="nc">&nbsp;        playerRectangle = worldRectangleToPixelRectangle(playerRectangle);</b>
+<b class="nc">&nbsp;        for (MapObject object : collisionObjects) {</b>
+&nbsp;            // If rectangle
+<b class="nc">&nbsp;            if (object instanceof RectangleMapObject) {</b>
+<b class="nc">&nbsp;                Rectangle rectangle = ((RectangleMapObject) object).getRectangle();</b>
+<b class="nc">&nbsp;                if (playerRectangle.overlaps(rectangle)) {</b>
+&nbsp;                    // Translate to screen coordinates for player&#39;s collision
+<b class="nc">&nbsp;                    overlaps.add(pixelToWorldRectangle(rectangle));</b>
+&nbsp;                }
+&nbsp;            }
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        return overlaps;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Correctly disposes of any loaded maps and any map renderers
+&nbsp;     */
+&nbsp;    @Override
+&nbsp;    public void dispose() {
+<b class="nc">&nbsp;        for (TiledMap map : loadedMaps.values()) {</b>
+<b class="nc">&nbsp;            map.dispose();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        for (OrthogonalTiledMapRenderer mapRenderer: loadedMapRenderers.values()) {</b>
+<b class="nc">&nbsp;            mapRenderer.dispose();</b>
+<b class="nc">&nbsp;        }</b>
+<b class="nc">&nbsp;        if (collisionRenderer != null) {</b>
+<b class="nc">&nbsp;            collisionRenderer.dispose();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return The loaded maps
+&nbsp;     */
+<b class="nc">&nbsp;    public HashMap&lt;String, TiledMap&gt; getLoadedMaps() { return loadedMaps; }</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * @return THe current map
+&nbsp;     */
+<b class="nc">&nbsp;    public TiledMap getCurrentMap() { return currentMap; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-05-20 15:06</div>
+</div>
+</body>
+</html>
